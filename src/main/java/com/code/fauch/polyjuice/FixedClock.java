@@ -25,7 +25,7 @@ import java.util.Objects;
  * @author c.fauch
  *
  */
-final class FixedClock extends AbsClock<Instant> {
+public final class FixedClock extends AbsClock<Instant> {
 
     /**
      * Constructor.
@@ -33,7 +33,7 @@ final class FixedClock extends AbsClock<Instant> {
      * @param instant the instant (not null)
      * @param zone the time-zone to use to convert the instant to date-time (not null)
      */
-    FixedClock(final ZoneId zone, final Instant instant) {
+    public FixedClock(final ZoneId zone, final Instant instant) {
         super(
                 Objects.requireNonNull(instant, "instant is missing"), 
                 Clock.fixed(instant, Objects.requireNonNull(zone, "zone is missing"))

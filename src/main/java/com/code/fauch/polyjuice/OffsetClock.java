@@ -25,14 +25,14 @@ import java.util.Objects;
  * @author c.fauch
  *
  */
-final class OffsetClock extends AbsClock<Duration> {
+public final class OffsetClock extends AbsClock<Duration> {
 
     /**
      * Constructor
      * 
      * @param offset the offset of the clock (positive or negative duration, not null)
      */
-    OffsetClock(final Duration offset) {
+    public OffsetClock(final Duration offset) {
         super(
                 Objects.requireNonNull(offset, "offset is missing"), 
                 Clock.offset(Clock.system(ZoneOffset.UTC), offset)

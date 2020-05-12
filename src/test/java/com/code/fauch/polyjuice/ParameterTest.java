@@ -27,7 +27,7 @@ public class ParameterTest {
     
     @Test
     public void testGetBytes() {
-        final Parameter<Short> param = Parameter.newParameter("label", StdType.SHORT, null);
+        final Parameter<Short> param = Parameter.newParameter("label", StdType.SHORT, null, false);
         param.setValue((short)42);
         final byte[] buff = param.getBytes();
         final ByteBuffer bb = ByteBuffer.wrap(buff);
@@ -35,9 +35,16 @@ public class ParameterTest {
     }
 
     @Test
+    public void testEncodeParameter() {
+        final byte[] buff = Parameter.newConstant("p", StdType.INT, 42).getBytes();
+        final ByteBuffer bb = ByteBuffer.wrap(buff);
+        Assert.assertEquals(42, bb.getInt());
+    }
+
+    @Test
     public void testValueChanges() {
         int[] values = new int[] {58};
-        final Parameter<Integer> param = Parameter.newParameter("label", StdType.INT, 58);
+        final Parameter<Integer> param = Parameter.newParameter("label", StdType.INT, 58, false);
         param.addPropertyChangeListener(e -> values[0] = (int) e.getNewValue());
         Assert.assertEquals(58, param.getValue().intValue());
         Assert.assertEquals(58, values[0]);
@@ -56,6 +63,21 @@ public class ParameterTest {
         param.setValue(42);
         Assert.assertEquals(58, param.getValue().intValue());
         Assert.assertEquals(58, values[0]);
+    }
+
+    @Test
+    public void testGetParameter() {
+        final Parameter<Short> param = Parameter.newParameter("label", StdType.SHORT, null, false);
+        param.setValue((short)42);
+        final Parameter<Short> found = param.getParameter("label");
+        Assert.assertTrue(found == param);
+    }
+
+    @Test
+    public void testGetValueNotFound() {
+        final Parameter<Short> param = Parameter.newParameter("label", StdType.SHORT, null, false);
+        param.setValue((short)42);
+        Assert.assertNull(param.getParameter("lbl"));
     }
 
 }

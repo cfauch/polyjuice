@@ -14,33 +14,32 @@
  */
 package com.code.fauch.polyjuice;
 
-import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
 import java.util.Objects;
 
-import com.code.fauch.polyjuice.spi.IContentTypeProvider;
+import com.code.fauch.polyjuice.spi.IContentFactoryProvider;
 
 /**
- * Standard content types provider.
+ * Standard content factory provider.
  * 
  * @author c.fauch
  *
  */
-public final class StdContentType implements IContentTypeProvider {
+public final class StdContentFactory implements IContentFactoryProvider {
 
     /**
      * A single parameter.
      */
-    public static final IContentType<Parameter<?>> PARAMETER = new IContentType<Parameter<?>>() {
-
-        @Override
-        public byte[] encode(Parameter<?> content) {
-            return Objects.requireNonNull(content, "content is mandatory").getBytes();
-        }
+    public static final IContentFactory PARAMETER = new IContentFactory() {
 
         @Override
         public String getName() {
             return "PARAMETER";
+        }
+
+        @Override
+        public IContent newContent(final ContentBuilder payload) {
+            //TODO check
+            return Objects.requireNonNull(payload.getParameter(), "missing parameter");
         }
         
     };
@@ -48,28 +47,22 @@ public final class StdContentType implements IContentTypeProvider {
     /**
      * A Sequence of parameters.
      */
-    public static final IContentType<Sequence> SEQUENCE = new IContentType<Sequence>() {
-
-        @Override
-        public byte[] encode(Sequence content) {
-            final ByteArrayOutputStream output = new ByteArrayOutputStream();
-            for (Parameter<?> p : Objects.requireNonNull(content, "content is mandatory")) {
-                if (p != null) {
-                    output.writeBytes(p.getBytes());
-                }
-            }
-            return content.getSize() == null ? output.toByteArray() : Arrays.copyOf(output.toByteArray(), content.getSize());
-        }
-
+    public static final IContentFactory SEQUENCE = new IContentFactory() {
+        
         @Override
         public String getName() {
             return "SEQUENCE";
+        }
+
+        @Override
+        public IContent newContent(final ContentBuilder payload) {
+            return new Sequence(payload.getSize(), Objects.requireNonNull(payload.getItems(), "missing items"));
         }
         
     };
     
     @Override
-    public IContentType<? extends IContent> getInstance(String name) {
+    public IContentFactory getInstance(String name) {
         if (name == null) {
             return null;
         }

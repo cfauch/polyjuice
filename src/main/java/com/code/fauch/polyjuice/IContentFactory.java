@@ -15,27 +15,21 @@
 package com.code.fauch.polyjuice;
 
 /**
- * Describes a content-type.
- * Is is used to encode the content of a payload.
+ * Describes a content factory.
+ * Is is used to build a payloas content.
  * 
  * @author c.fauch
  *
  */
-public interface IContentType<T> {
-
-    /**
-     * Encode the given content into sequence of bytes
-     * 
-     * @param content the content to encode (may be null)
-     * @return the encoded content or null if content is null
-     */
-    byte[] encode(T content);
+public interface IContentFactory {
     
     /**
-     * Returns the name of this content type like expected in text.
+     * Returns the name of this content factory like expected in text.
      * 
      * @return the name (not null)
      */
     String getName();
+    
+    IContent newContent(ContentBuilder payload);
     
 }

@@ -1,0 +1,7 @@
+type: PARAMETER
+
+parameter:
+   name: magical_number
+   type: INT
+   value: 42
+   readonly: true

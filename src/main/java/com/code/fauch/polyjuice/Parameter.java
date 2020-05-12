@@ -81,11 +81,12 @@ public class Parameter <T> implements IContent {
      * @param label the label of the parameter (not null)
      * @param type the type of the parameter (not null)
      * @param value the value of the parameter
+     * @param readOnly true for a constant
      * @return the new parameter
      */
     public static <U> Parameter<U> newParameter(final String label, final IType<U> type, 
-            final U value) {
-        return new Parameter<U>(label, type, value, false);
+            final U value, final boolean readOnly) {
+        return new Parameter<U>(label, type, value, readOnly);
     }
     
     /**
@@ -102,14 +103,6 @@ public class Parameter <T> implements IContent {
         return new Parameter<U>(label, type, value, true);
     }
     
-    /**
-     * There is no fixed size for parameter available.
-     * The expected size depend on the type of the parameter
-     */
-    @Override
-    public Integer getSize() {
-        return null;
-    }
 
     /**
      * The label of this parameter
@@ -166,6 +159,7 @@ public class Parameter <T> implements IContent {
      * 
      * @return the encoded parameter
      */
+    @Override
     public byte[] getBytes() {
         return this.type.encode(this.value);
     }
@@ -226,5 +220,11 @@ public class Parameter <T> implements IContent {
     public String toString() {
         return "Parameter [label=" + label + ", type=" + type + ", value=" + value + "]";
     }
-    
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <U> Parameter<U> getParameter(String name) {
+        return !this.label.equals(name)? null : (Parameter<U>) this;
+    }
+     
 }

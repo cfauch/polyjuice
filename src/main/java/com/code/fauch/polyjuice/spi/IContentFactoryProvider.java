@@ -14,24 +14,23 @@
  */
 package com.code.fauch.polyjuice.spi;
 
-import com.code.fauch.polyjuice.IContent;
-import com.code.fauch.polyjuice.IContentType;
+import com.code.fauch.polyjuice.IContentFactory;
 
 /**
- * Describes a provider of content-types.
- * It is used to search content-type from text thanks to SPI.
+ * Describes a provider of content factory.
+ * It is used to search content factory from text thanks to SPI.
  * 
  * @author c.fauch
  *
  */
-public interface IContentTypeProvider {
+public interface IContentFactoryProvider {
 
     /**
-     * Research the content-type corresponding to the given name
+     * Research the content factory corresponding to the given name
      * 
-     * @param name the name of the content-type to research
-     * @return the corresponding content-type or null if not found.
+     * @param name the name of the content factory to research
+     * @return the corresponding factory or null if not found.
      */
-    IContentType<? extends IContent> getInstance(String name);
+    IContentFactory getInstance(String name);
     
 }

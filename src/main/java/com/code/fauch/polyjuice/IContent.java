@@ -25,13 +25,6 @@ import java.beans.PropertyChangeListener;
 public interface IContent {
 
     /**
-     * The expected size of the encoded content.
-     * 
-     * @return the expected size in bytes
-     */
-    Integer getSize();
-    
-    /**
      * Register a listener to listen all changes on this content.
      * 
      * @param listener the listener to register (not null)
@@ -44,5 +37,21 @@ public interface IContent {
      * @param listener the listener to unregister
      */
     void removePropertyChangeListener(PropertyChangeListener listener);
+    
+    /**
+     * Encode this content into a sequence of bytes.
+     * 
+     * @return the encoded content
+     */
+    byte[] getBytes();
+    
+    /**
+     * Search for a parameter with the given name.
+     * 
+     * @param <U>
+     * @param name the name of the parameter to research
+     * @return the corresponding parameter or null if not found
+     */
+    <U> Parameter<U> getParameter(String name);
     
 }
