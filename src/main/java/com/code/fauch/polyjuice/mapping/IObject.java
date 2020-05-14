@@ -12,24 +12,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.code.fauch.polyjuice;
+package com.code.fauch.polyjuice.mapping;
+
+import java.util.List;
+
+import com.code.fauch.polyjuice.Parameter;
 
 /**
- * Describes a content factory.
- * Is is used to build a payloas content.
+ * Interface describing the expected contract of object to build by ObjectFactory.
+ * This type of object should maintain an ordered list of parameters.
  * 
  * @author c.fauch
  *
  */
-public interface IContentFactory {
-    
+public interface IObject {
+
     /**
-     * Returns the name of this content factory like expected in text.
+     * Specify ordered parameters.
      * 
-     * @return the name (not null)
+     * @param orderedParameters the ordered parameters (not null)
      */
-    String getName();
-    
-    IContent newContent(ContentBuilder payload);
+    void setOrderedParameters(List<Parameter<?>> orderedParameters);
     
 }

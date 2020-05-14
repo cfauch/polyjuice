@@ -170,7 +170,6 @@ public class Parameter <T> implements IContent {
     @Override
     public final void addPropertyChangeListener(PropertyChangeListener listener) {
         this.changeSupport.addPropertyChangeListener(listener);
-        
     }
 
     /**
@@ -180,6 +179,22 @@ public class Parameter <T> implements IContent {
     public final void removePropertyChangeListener(PropertyChangeListener listener) {
         this.changeSupport.removePropertyChangeListener(listener);
     }
+    
+    /**
+     * Check if a listener is already register.
+     * 
+     * @param listener the listener to check (not null)
+     * @return true if listener already registered else false
+     */
+    public boolean hasListener(PropertyChangeListener listener) {
+        for (PropertyChangeListener l : this.changeSupport.getPropertyChangeListeners()) {
+            if (l == listener) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     
     /**
      * Reports parameter change to listeners.
@@ -219,12 +234,6 @@ public class Parameter <T> implements IContent {
     @Override
     public String toString() {
         return "Parameter [label=" + label + ", type=" + type + ", value=" + value + "]";
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <U> Parameter<U> getParameter(String name) {
-        return !this.label.equals(name)? null : (Parameter<U>) this;
     }
      
 }

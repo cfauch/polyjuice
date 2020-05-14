@@ -65,19 +65,4 @@ public class ParameterTest {
         Assert.assertEquals(58, values[0]);
     }
 
-    @Test
-    public void testGetParameter() {
-        final Parameter<Short> param = Parameter.newParameter("label", StdType.SHORT, null, false);
-        param.setValue((short)42);
-        final Parameter<Short> found = param.getParameter("label");
-        Assert.assertTrue(found == param);
-    }
-
-    @Test
-    public void testGetValueNotFound() {
-        final Parameter<Short> param = Parameter.newParameter("label", StdType.SHORT, null, false);
-        param.setValue((short)42);
-        Assert.assertNull(param.getParameter("lbl"));
-    }
-
 }

@@ -44,14 +44,5 @@ public interface IContent {
      * @return the encoded content
      */
     byte[] getBytes();
-    
-    /**
-     * Search for a parameter with the given name.
-     * 
-     * @param <U>
-     * @param name the name of the parameter to research
-     * @return the corresponding parameter or null if not found
-     */
-    <U> Parameter<U> getParameter(String name);
-    
+
 }

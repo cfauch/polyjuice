@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.code.fauch.polyjuice.dto;
+package com.code.fauch.polyjuice.mapping;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -28,23 +28,25 @@ import com.code.fauch.polyjuice.Parameter;
 import com.code.fauch.polyjuice.spi.Providers;
 
 /**
+ * Factory used to build new instance of Parameter.
+ * 
  * @author c.fauch
  *
  */
-public class DTOParameter {
-
+public final class ParameterFactory {
+    
     /**
-     * name
+     * name of the parameter
      */
     private String name;
 
     /**
-     * type
+     * type of the parameter
      */
     private String type;
     
     /**
-     * Optional value
+     * value of the value
      */
     private Object value;
 
@@ -54,6 +56,8 @@ public class DTOParameter {
     private boolean readonly;
 
     /**
+     * Returns the name of the parameter
+     * 
      * @return the name
      */
     public String getName() {
@@ -61,6 +65,8 @@ public class DTOParameter {
     }
 
     /**
+     * Specify the name of the parameter
+     * 
      * @param name the name to set
      */
     public void setName(String name) {
@@ -68,6 +74,8 @@ public class DTOParameter {
     }
 
     /**
+     * Returns the type of the parameter.
+     * 
      * @return the type
      */
     public String getType() {
@@ -75,6 +83,8 @@ public class DTOParameter {
     }
 
     /**
+     * Specify the type of the parameter.
+     * 
      * @param type the type to set
      */
     public void setType(String type) {
@@ -82,6 +92,8 @@ public class DTOParameter {
     }
 
     /**
+     * Returns the value of the parameter.
+     * 
      * @return the value
      */
     public Object getValue() {
@@ -89,6 +101,8 @@ public class DTOParameter {
     }
 
     /**
+     * Specify the value of the parameter.
+     * 
      * @param value the value to set
      */
     public void setValue(Object value) {
@@ -96,6 +110,7 @@ public class DTOParameter {
     }
 
     /**
+     * Returns true if the parameter is read only.
      * @return the readonly
      */
     public boolean isReadonly() {
@@ -103,20 +118,23 @@ public class DTOParameter {
     }
 
     /**
-     * @param readonly the readonly to set
+     * Specify whether the parameter is read only or not
+     * 
+     * @param readonly true for a read only parameter
      */
     public void setReadonly(boolean readonly) {
         this.readonly = readonly;
     }
    
     /**
-     * Creates and returns the corresponding payload parameter.
-     * @return the corresponding payload parameter
+     * Creates and returns the corresponding parameter.
+     * 
+     * @return the corresponding parameter
      */
-    public Parameter<?> build() {
+    public <U> Parameter<U> build() {
         return from(
-                this.name, 
-                Objects.requireNonNull(Providers.getTypeInstance(this.type), "unknown type: " + this.type), 
+                Objects.requireNonNull(this.name, "missing 'name'"), 
+                Objects.requireNonNull(Providers.getTypeInstance(Objects.requireNonNull(this.type, "missing 'type'")), "unknown type: " + this.type), 
                 this.value,
                 this.readonly
         );
@@ -125,8 +143,8 @@ public class DTOParameter {
     /**
      * Builds and returns parameter with the given type and value
      * @param <U>
-     * @param label the label of the parameter
-     * @param type the expected type
+     * @param label the label of the parameter (not null)
+     * @param type the expected type (not null)
      * @param value the value
      * @param readOnly true for a constant
      * @return the just built parameter

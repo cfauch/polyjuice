@@ -1,15 +1,11 @@
-type: SEQUENCE
-size: 20
-
-#Ordered list of items
 parameters:
 -  &magical_number
-   name: magical_number
+   name: magicalNumber
    type: INT
    value: 42
    readonly: true
    
--  name: msg_size
+-  name: msgSize
    type: INT
    value: 13
    

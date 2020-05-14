@@ -31,6 +31,6 @@ public interface ITypeProvider {
      * @param name the name of the type to research
      * @return the corresponding content type or null if not found.
      */
-    IType<?> getInstance(String name);
+    <U> IType<U> getInstance(String name);
     
 }

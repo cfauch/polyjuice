@@ -29,7 +29,7 @@ public class SequenceTest {
 
     @Test
     public void testNewParameterCopy() {
-        final ArrayList<IContent> params = new ArrayList<IContent>();
+        final ArrayList<Parameter<?>> params = new ArrayList<Parameter<?>>();
         params.add(Parameter.newParameter("l1", StdType.INT, 42, false));
         final Sequence seq = new Sequence(4, params);
         params.add(Parameter.newParameter("l2", StdType.INT, 421, false));
@@ -45,7 +45,7 @@ public class SequenceTest {
         final String[] labels = new String[]{""};
         final Parameter<Integer> p1 = Parameter.newParameter("l1", StdType.INT, 42, false);
         final Parameter<Integer> p2 = Parameter.newParameter("l2", StdType.INT, 421, false); 
-        final ArrayList<IContent> params = new ArrayList<IContent>();
+        final ArrayList<Parameter<?>> params = new ArrayList<Parameter<?>>();
         params.add(p1);
         params.add(p2);
         final Sequence seq = new Sequence(4, params);
@@ -59,7 +59,7 @@ public class SequenceTest {
     public void testEncodeSequence() {
         final Parameter<Integer> p1 = Parameter.newConstant("p1", StdType.INT, 42);
         final Parameter<Integer> p2 = Parameter.newConstant("p2", StdType.INT, 421);
-        final byte[] buff = new Sequence(null, Arrays.asList(p1, p2)).getBytes();
+        final byte[] buff = new Sequence(null, new ArrayList<>(Arrays.asList(p1, p2))).getBytes();
         final ByteBuffer bb = ByteBuffer.wrap(buff);
         Assert.assertEquals(42, bb.getInt());
         Assert.assertEquals(421, bb.getInt());
@@ -69,7 +69,7 @@ public class SequenceTest {
     public void testEncodeSequenceSize() {
         final Parameter<Integer> p1 = Parameter.newConstant("p1", StdType.INT, 42);
         final Parameter<Integer> p2 = Parameter.newConstant("p2", StdType.INT, 421);
-        final byte[] buff = new Sequence(12, Arrays.asList(p1, p2)).getBytes();
+        final byte[] buff = new Sequence(12, new ArrayList<>(Arrays.asList(p1, p2))).getBytes();
         final ByteBuffer bb = ByteBuffer.wrap(buff);
         Assert.assertEquals(42, bb.getInt());
         Assert.assertEquals(421, bb.getInt());
@@ -80,7 +80,7 @@ public class SequenceTest {
     public void testEncodeSequenceSizeInf() {
         final Parameter<Integer> p1 = Parameter.newConstant("p1", StdType.INT, 42);
         final Parameter<Integer> p2 = Parameter.newConstant("p2", StdType.INT, 421);
-        final byte[] buff = new Sequence(4, Arrays.asList(p1, p2)).getBytes();
+        final byte[] buff = new Sequence(4, new ArrayList<>(Arrays.asList(p1, p2))).getBytes();
         final ByteBuffer bb = ByteBuffer.wrap(buff);
         Assert.assertEquals(42, bb.getInt());
         Assert.assertEquals(4, buff.length);
@@ -90,7 +90,7 @@ public class SequenceTest {
     public void testGetValue() {
         final Parameter<Integer> p1 = Parameter.newParameter("l1", StdType.INT, 42, false);
         final Parameter<Integer> p2 = Parameter.newParameter("l2", StdType.INT, 421, false); 
-        final ArrayList<IContent> params = new ArrayList<IContent>();
+        final ArrayList<Parameter<?>> params = new ArrayList<Parameter<?>>();
         params.add(p1);
         params.add(p2);
         final Sequence seq = new Sequence(4, params);
@@ -105,7 +105,7 @@ public class SequenceTest {
     public void testGetValueNotFound() {
         final Parameter<Integer> p1 = Parameter.newParameter("l1", StdType.INT, 42, false);
         final Parameter<Integer> p2 = Parameter.newParameter("l2", StdType.INT, 421, false); 
-        final ArrayList<IContent> params = new ArrayList<IContent>();
+        final ArrayList<Parameter<?>> params = new ArrayList<>();
         params.add(p1);
         params.add(p2);
         final Sequence seq = new Sequence(4, params);

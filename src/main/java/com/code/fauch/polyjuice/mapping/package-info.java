@@ -12,25 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.code.fauch.polyjuice.spi;
-
-import com.code.fauch.polyjuice.IContentFactory;
-
 /**
- * Describes a provider of content factory.
- * It is used to search content factory from text thanks to SPI.
- * 
  * @author c.fauch
  *
  */
-public interface IContentFactoryProvider {
-
-    /**
-     * Research the content factory corresponding to the given name
-     * 
-     * @param name the name of the content factory to research
-     * @return the corresponding factory or null if not found.
-     */
-    IContentFactory getInstance(String name);
-    
-}
+package com.code.fauch.polyjuice.mapping;

@@ -14,13 +14,11 @@
  */
 package com.code.fauch.polyjuice;
 
-import java.beans.PropertyChangeListener;
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Definition of a sequence of item.
@@ -29,7 +27,7 @@ import java.util.Objects;
  * @author c.fauch
  *
  */
-public class Sequence implements Iterable<IContent>, IContent {
+public class Sequence extends AbsContent {
     
     /**
      * The expected size of the encoded sequence (in bytes).
@@ -38,29 +36,19 @@ public class Sequence implements Iterable<IContent>, IContent {
     private final Integer size;
     
     /**
-     * The ordered list of item of the sequence.
+     * The expected ordered parameters in the sequence
      */
-    private final ArrayList<IContent> items;
+    private final List<Parameter<?>> orderedParameters;
     
     /**
      * Constructor.
      * 
      * @param size the expected size in bytes of the encoded content (may be null).
+     * @param parameters the ordered list of parameters (list to copy, not null may be empty)
      */
-    private Sequence(final Integer size) {
+    public Sequence(final Integer size, final List<Parameter<?>> parameters) {
         this.size = size;
-        this.items = new ArrayList<IContent>();
-    }
-    
-    /**
-     * Constructor.
-     * 
-     * @param size the expected size in bytes of the encoded content (may be null).
-     * @param items the ordered list of items (list to copy, not null may be empty)
-     */
-    protected Sequence(final Integer size, final List<IContent> items) {
-        this(size);
-        this.items.addAll(Objects.requireNonNull(items, "items is mandatory"));
+        this.orderedParameters = Collections.unmodifiableList(new ArrayList<>(parameters));
     }
         
     /**
@@ -71,58 +59,26 @@ public class Sequence implements Iterable<IContent>, IContent {
         return this.size;
     }
 
-    /**
-     * Register the listener to listen all items of the sequence
-     */
     @Override
-    public final void addPropertyChangeListener(PropertyChangeListener listener) {
-        for (IContent item : this.items) {
-            item.addPropertyChangeListener(listener);
-        }
+    public byte[] getBytes() {
+        return this.size == null ? super.getBytes() : Arrays.copyOf(super.getBytes(), this.size);
     }
 
-    /**
-     * Unregister the listener from all items of the sequence
-     */
-    @Override
-    public final void removePropertyChangeListener(PropertyChangeListener listener) {
-        for (IContent item : this.items) {
-            item.removePropertyChangeListener(listener);
-        }
-    }
-
-    @Override
-    public final Iterator<IContent> iterator() {
-        return this.items.iterator();
-    }
-
-    @Override
-    public final byte[] getBytes() {
-        return this.size == null ? encodeItems() : Arrays.copyOf(encodeItems(), this.size);
-    }
-    
-    protected byte[] encodeItems() {
-        final ByteArrayOutputStream output = new ByteArrayOutputStream();
-        for (IContent item : this.items) {
-            if (item != null) {
-                output.writeBytes(item.getBytes());
-            }
-        }
-        return output.toByteArray();
-    }
-
-    @Override
+    @SuppressWarnings("unchecked")
     public <U> Parameter<U> getParameter(String name) {
-        //TODO mefiance les cycles
-        for (IContent item : this.items) {
-            if (item != null) {
-                final Parameter<U> param = item.getParameter(name);
-                if (param != null) {
-                    return param;
+        for (Parameter<?> p: this.orderedParameters) {
+            if (p != null) {
+                if (p.getLabel().equals(name)) {
+                    return (Parameter<U>) p;
                 }
             }
         }
         return null;
+    }
+
+    @Override
+    public Iterator<Parameter<?>> iterator() {
+        return this.orderedParameters.iterator();
     }
     
 }

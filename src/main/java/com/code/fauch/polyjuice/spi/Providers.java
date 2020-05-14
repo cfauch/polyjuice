@@ -16,7 +16,6 @@ package com.code.fauch.polyjuice.spi;
 
 import java.util.ServiceLoader;
 
-import com.code.fauch.polyjuice.IContentFactory;
 import com.code.fauch.polyjuice.IType;
 
 /**
@@ -33,11 +32,6 @@ public final class Providers {
     private static final ServiceLoader<ITypeProvider> TYPES = ServiceLoader.load(ITypeProvider.class);
 
     /**
-     * The service loader to use to research providers of content-types.
-     */
-    private static final ServiceLoader<IContentFactoryProvider> CONTENT_TYPES = ServiceLoader.load(IContentFactoryProvider.class);
-
-    /**
      * No constructor
      */
     private Providers() {
@@ -50,25 +44,9 @@ public final class Providers {
      * @param name the name of the type to research
      * @return the corresponding type or null if not found
      */
-    public static IType<?> getTypeInstance(final String name) {
+    public static <U> IType<U> getTypeInstance(final String name) {
         for (ITypeProvider provider : TYPES) {
-            final IType<?> type = provider.getInstance(name);
-            if (type != null) {
-                return type;
-            }
-        }
-        return null;
-    }
- 
-    /**
-     * Research a content factory corresponding to a given name.
-     * 
-     * @param name the name of the content factory to research
-     * @return the corresponding factory or null if not found
-     */
-    public static IContentFactory getContentTypeInstance(final String name) {
-        for (IContentFactoryProvider provider : CONTENT_TYPES) {
-            final IContentFactory type = provider.getInstance(name);
+            final IType<U> type = provider.getInstance(name);
             if (type != null) {
                 return type;
             }

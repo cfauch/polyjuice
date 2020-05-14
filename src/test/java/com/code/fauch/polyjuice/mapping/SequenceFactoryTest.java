@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.code.fauch.polyjuice.dto;
+package com.code.fauch.polyjuice.mapping;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,44 +23,44 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 import com.code.fauch.polyjuice.IContent;
+import com.code.fauch.polyjuice.Sequence;
 
 /**
  * @author c.fauch
  *
  */
-public class DTOPayloadTest {
+public class SequenceFactoryTest {
 
     @Test
     public void testLoad() throws IOException {
-        try (InputStream in = getClass().getResourceAsStream("/template.yml")) {
-            DTOPayload payload = new Yaml(new Constructor(DTOPayload.class)).load(in);
-            Assert.assertEquals("SEQUENCE", payload.getType());
-            Assert.assertNull(payload.getSize());
-            Assert.assertEquals(5, payload.getParameters().size());
-            final DTOParameter p1 = payload.getParameters().get(0);
+        try (InputStream in = getClass().getResourceAsStream("/seq-template.yml")) {
+            SequenceFactory sf = new Yaml(new Constructor(SequenceFactory.class)).load(in);
+            Assert.assertNull(sf.getSize());
+            Assert.assertEquals(5, sf.getParameters().size());
+            final ParameterFactory p1 = sf.getParameters().get(0);
             Assert.assertEquals("magical_number", p1.getName());
             Assert.assertEquals("INT", p1.getType());
             Assert.assertEquals(42, p1.getValue());
             Assert.assertTrue(p1.isReadonly());
-            final DTOParameter p2 = payload.getParameters().get(1);
+            final ParameterFactory p2 = sf.getParameters().get(1);
             Assert.assertEquals("msg_size", p2.getName());
             Assert.assertEquals("INT", p2.getType());
             Assert.assertEquals(13, p2.getValue());
             Assert.assertFalse(p2.isReadonly());
-            final DTOParameter p3 = payload.getParameters().get(2);
+            final ParameterFactory p3 = sf.getParameters().get(2);
             Assert.assertEquals("msg", p3.getName());
             Assert.assertEquals("STRING", p3.getType());
             Assert.assertEquals("HELLO WORLD !", p3.getValue());
             Assert.assertFalse(p3.isReadonly());
-            Assert.assertTrue(p1 == payload.getParameters().get(4));
+            Assert.assertTrue(p1 == sf.getParameters().get(4));
         }
     }
 
     @Test
     public void testBuildPayload() throws IOException {
-        try (InputStream in = getClass().getResourceAsStream("/template.yml")) {
-            final DTOPayload payload = new Yaml(new Constructor(DTOPayload.class)).load(in);
-            final IContent content = payload.build();
+        try (InputStream in = getClass().getResourceAsStream("/seq-template.yml")) {
+            final SequenceFactory sf = new Yaml(new Constructor(SequenceFactory.class)).load(in);
+            final Sequence content = sf.build();
             Assert.assertEquals(49, content.getBytes().length);
             content.getParameter("msg").setValue("MERCI");
             content.getParameter("msg_size").setValue(5);
@@ -70,9 +70,9 @@ public class DTOPayloadTest {
 
     @Test
     public void testBuildPayloadWithSize() throws IOException {
-        try (InputStream in = getClass().getResourceAsStream("/template-with-size.yml")) {
-            final DTOPayload payload = new Yaml(new Constructor(DTOPayload.class)).load(in);
-            final IContent content = payload.build();
+        try (InputStream in = getClass().getResourceAsStream("/seq-template-with-size.yml")) {
+            final SequenceFactory sf = new Yaml(new Constructor(SequenceFactory.class)).load(in);
+            final Sequence content = sf.build();
             Assert.assertEquals(20, content.getBytes().length);
             content.getParameter("msg").setValue("MERCI");
             content.getParameter("msg_size").setValue(5);
@@ -82,29 +82,20 @@ public class DTOPayloadTest {
 
     @Test
     public void testBuildPayloadWithoutParameters() throws IOException {
-        try (InputStream in = getClass().getResourceAsStream("/template-without-parameters.yml")) {
-            final DTOPayload payload = new Yaml(new Constructor(DTOPayload.class)).load(in);
-            final IContent content = payload.build();
+        try (InputStream in = getClass().getResourceAsStream("/seq-template-without-parameters.yml")) {
+            final SequenceFactory sf = new Yaml(new Constructor(SequenceFactory.class)).load(in);
+            final IContent content = sf.build();
             Assert.assertEquals(0, content.getBytes().length);
         }
     }
 
     @Test(expected = NullPointerException.class)
     public void testBuildPayloadMissingParameters() throws IOException {
-        try (InputStream in = getClass().getResourceAsStream("/template-missing-parameters.yml")) {
-            final DTOPayload payload = new Yaml(new Constructor(DTOPayload.class)).load(in);
+        try (InputStream in = getClass().getResourceAsStream("/seq-template-missing-parameters.yml")) {
+            final SequenceFactory payload = new Yaml(new Constructor(SequenceFactory.class)).load(in);
             payload.build();
         }
     }
 
-    @Test
-    public void testBuildParameter() throws IOException {
-        try (InputStream in = getClass().getResourceAsStream("/template-parameter.yml")) {
-            final DTOPayload payload = new Yaml(new Constructor(DTOPayload.class)).load(in);
-            final IContent content = payload.build();
-            Assert.assertEquals(4, content.getBytes().length);
-            Assert.assertEquals(42, content.getParameter("magical_number").getValue());
-        }
-    }
 
 }
