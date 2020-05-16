@@ -14,36 +14,26 @@
  */
 package com.code.fauch.polyjuice.mapping;
 
-import java.beans.IntrospectionException;
-import java.lang.reflect.InvocationTargetException;
-
 /**
  * @author c.fauch
  *
  */
-public final class TrucWithSizeFactory extends ObjectFactory {
+public final class TrucWithIp extends Truc {
 
-    private Integer size;
-
-    /**
-     * @return the size
-     */
-    public Integer getSize() {
-        return size;
-    }
+    private String ip;
 
     /**
-     * @param size the size to set
+     * @return the ip
      */
-    public void setSize(Integer size) {
-        this.size = size;
+    public String getIp() {
+        return ip;
     }
 
-    public TrucWithSize build() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, 
-    NoSuchMethodException, SecurityException, IntrospectionException {
-        final TrucWithSize truc = super.build(TrucWithSize.class);
-        truc.setSize(this.size);
-        return truc;
+    /**
+     * @param ip the ip to set
+     */
+    public void setIp(String ip) {
+        this.ip = ip;
     }
-    
+
 }

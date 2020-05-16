@@ -84,9 +84,9 @@ public class ObjectFactoryTest {
     public void testExtenstion() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, 
     NoSuchMethodException, SecurityException, IntrospectionException, IOException {
         final ArrayList<String> labels = new ArrayList<>();
-        try (InputStream in = getClass().getResourceAsStream("/truc-template-with-size.yml")) {
-            final TrucWithSizeFactory payload = new Yaml(new Constructor(TrucWithSizeFactory.class)).load(in);
-            final TrucWithSize truc = payload.build();
+        try (InputStream in = getClass().getResourceAsStream("/truc-template-with-ip.yml")) {
+            final TrucWithIpFactory payload = new Yaml(new Constructor(TrucWithIpFactory.class)).load(in);
+            final TrucWithIp truc = payload.build();
             Assert.assertEquals(42, truc.getMagicalNumber().getValue().intValue());
             Assert.assertEquals(13, truc.getMsgSize().getValue().intValue());
             Assert.assertEquals("HELLO WORLD !", truc.getMsg().getValue());
@@ -99,7 +99,7 @@ public class ObjectFactoryTest {
             Assert.assertEquals("MERCI", truc.getMsg().getValue());
             Assert.assertEquals(41, truc.getBytes().length);
             Assert.assertEquals(Arrays.asList("msg", "msgSize"), labels);
-            Assert.assertEquals(50, truc.getSize().intValue());
+            Assert.assertEquals("192.168.56.103", truc.getIp());
         }
     }
     

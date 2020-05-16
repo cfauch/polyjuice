@@ -15,10 +15,19 @@
 package com.code.fauch.polyjuice.mapping;
 
 /**
- * Factory used to build new instance of IObject.
+ * Interface describing the expected contract of object to build by SizedObjectFactory.
+ * This type of object should maintain an ordered list of parameters and an expected size.
  * 
  * @author c.fauch
  *
  */
-public final class ObjectFactory extends AbsObjectFactory<IObject> {
+public interface ISizedObject extends IObject {
+    
+    /**
+     * The expected size in bytes of the encoded result
+     * 
+     * @param size the expected size by be null.
+     */
+    void setExpectedSize(Integer size);
+
 }

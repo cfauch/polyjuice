@@ -13,6 +13,8 @@
  * limitations under the License.
  */
 /**
+ * This package allows to extend polyjuice using the Service Provider Interface.
+ * 
  * @author c.fauch
  *
  */

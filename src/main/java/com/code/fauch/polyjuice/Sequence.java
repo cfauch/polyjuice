@@ -15,7 +15,6 @@
 package com.code.fauch.polyjuice;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -33,7 +32,7 @@ public class Sequence extends AbsContent {
      * The expected size of the encoded sequence (in bytes).
      * Null means auto-adjust
      */
-    private final Integer size;
+    private final Integer expectedSize;
     
     /**
      * The expected ordered parameters in the sequence
@@ -47,7 +46,7 @@ public class Sequence extends AbsContent {
      * @param parameters the ordered list of parameters (list to copy, not null may be empty)
      */
     public Sequence(final Integer size, final List<Parameter<?>> parameters) {
-        this.size = size;
+        this.expectedSize = size;
         this.orderedParameters = Collections.unmodifiableList(new ArrayList<>(parameters));
     }
         
@@ -55,13 +54,9 @@ public class Sequence extends AbsContent {
      * The expected size.
      * Null means auto-adjust
      */
-    public final Integer getSize() {
-        return this.size;
-    }
-
     @Override
-    public byte[] getBytes() {
-        return this.size == null ? super.getBytes() : Arrays.copyOf(super.getBytes(), this.size);
+    public final Integer getExpectedSize() {
+        return this.expectedSize;
     }
 
     @SuppressWarnings("unchecked")

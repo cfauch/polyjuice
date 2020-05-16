@@ -16,6 +16,7 @@ package com.code.fauch.polyjuice;
 
 import java.beans.PropertyChangeListener;
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 
 /**
  * Partial implementation of content that manage property change listeners and encoding based on the ability of iterate
@@ -50,10 +51,29 @@ public abstract class AbsContent implements IContent, Iterable<Parameter<?>> {
     }
     
     /**
-     * Encode each parameters.
+     * Adapt the result if necessary to match the expected size if it is defined.
      */
     @Override
-    public byte[] getBytes() {
+    public final byte[] getBytes() {
+        return getExpectedSize() == null ? encode() : Arrays.copyOf(encode(), getExpectedSize());
+    }
+
+    /**
+     * Returns the expected size of the encoded content.
+     * If not null the result is truncated and padded with zeros to match the expected size.
+     * 
+     * @return null by default.
+     */
+    protected Integer getExpectedSize() {
+        return null;
+    }
+    
+    /**
+     * Encode each parameters.
+     * 
+     * @return the encoded content.
+     */
+    private final byte[] encode() {
         final ByteArrayOutputStream output = new ByteArrayOutputStream();
         for (Parameter<?> p : this) {
             if (p != null) {

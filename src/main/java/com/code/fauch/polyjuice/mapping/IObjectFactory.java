@@ -14,11 +14,16 @@
  */
 package com.code.fauch.polyjuice.mapping;
 
+import java.beans.IntrospectionException;
+import java.lang.reflect.InvocationTargetException;
+
 /**
- * Factory used to build new instance of IObject.
- * 
  * @author c.fauch
  *
  */
-public final class ObjectFactory extends AbsObjectFactory<IObject> {
+public interface IObjectFactory<T> {
+
+    public <U extends T> U build(final Class<U> clss) 
+            throws InstantiationException, IllegalAccessException, IllegalArgumentException, 
+            InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException;
 }

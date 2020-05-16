@@ -13,6 +13,87 @@
  * limitations under the License.
  */
 /**
+ * <p>
+ * This package provides factories to build sequence of parameters.
+ * Provided factories can be used to build sequence of parameters from YAML files.
+ * </p>
+ * <h3>Example of YAML file</h3>
+ * <pre>
+ * parameters:
+ * -  &magical_number
+ *    name: magicalNumber
+ *    type: INT
+ *    value: 42
+ *    readonly: true
+ *   
+ *  -  name: msgSize
+ *     type: INT
+ *    value: 13
+ *   
+ * -  name: msg
+ *    type: STRING
+ *    value: HELLO WORLD !
+ *   
+ * -  name: clock
+ *    type: OFFSET_CLOCK
+ *    value: PT-12H
+ *
+ * -  *magical_number
+ * </pre>
+ * <h3>Example of code to read this file </h3>
+ * <pre>
+ *      try (InputStream in = getClass().getResourceAsStream("/truc-template.yml")) {
+ *          final ObjectFactory payload = new Yaml(new Constructor(ObjectFactory.class)).load(in);
+ *          final Truc truc = payload.build(Truc.class);
+ *          truc.getMagicalNumber().getValue();
+ *          truc.getMsg().setValue("MERCY");
+ *      }
+ * </pre>
+ * <p>
+ * The factory <code>ObjectFactory</code> is provided by this package. You just have to create the bean <code>truc</code> and then
+ * call the getter to retrieve a parameter in order to obtain its value or set a new value. 
+ * </p>
+ * <h3>Example of expected bean </h3
+ * <p> Your bean should implements <code>IObject</code>. It may also extends <code>AbsContent</code> to benefit from management
+ * of value change listeners and predefined encoding of parameters. Your bean should have getter/setter for each expected parameters 
+ * in the YAML file.
+ * </p>
+ * <pre>
+ * public final class Truc extends AbsContent implements IObject {
+ * 
+ *     private Parameter&lt;Integer&gt; magicalNumber;
+ *     
+ *     private Parameter&lt;String&gt; msg;
+ *     
+ *     private List&lt;Parameter&lt;?&gt;&gt; orderedParameters;
+ * 
+ *     public Parameter&lt;Integer&gt; getMagicalNumber() {
+ *         return magicalNumber;
+ *     }
+ * 
+ *     public void setMagicalNumber(Parameter&lt;Integer&gt; magicalNumber) {
+ *         this.magicalNumber = magicalNumber;
+ *     }
+ * 
+ *     public Parameter&lt;String&gt; getMsg() {
+ *         return msg;
+ *     }
+ * 
+ *     public void setMsg(Parameter&lt;String&gt; msg) {
+ *         this.msg = msg;
+ *     }
+ * 
+ *     public void setOrderedParameters(final List&lt;Parameter&lt;?&gt;&gt; orderedParameters) {
+ *         this.orderedParameters = orderedParameters;
+ *     }
+ * 
+ *     public Iterator&lt;Parameter&lt;?&gt;&gt; iterator() {
+ *         return this.orderedParameters.iterator();
+ *     }
+ *     
+ * }
+ * </pre>
+ * 
  * @author c.fauch
  *
  */

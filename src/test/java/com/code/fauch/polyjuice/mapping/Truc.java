@@ -25,7 +25,7 @@ import com.code.fauch.polyjuice.Parameter;
  * @author c.fauch
  *
  */
-public final class Truc extends AbsContent implements IObject {
+public class Truc extends AbsContent implements IObject {
 
     private Parameter<Integer> magicalNumber;
     
