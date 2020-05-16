@@ -29,7 +29,7 @@ import com.code.fauch.polyjuice.Parameter;
  * @author c.fauch
  *
  */
-public final class ObjectFactory {
+public class ObjectFactory {
 
     /**
      * The ordered list of parameters.
@@ -41,7 +41,7 @@ public final class ObjectFactory {
      * 
      * @return the parameters
      */
-    public List<ParameterFactory> getParameters() {
+    public final List<ParameterFactory> getParameters() {
         return parameters;
     }
 
@@ -50,7 +50,7 @@ public final class ObjectFactory {
      * 
      * @param parameters the parameters to set
      */
-    public void setParameters(final List<ParameterFactory> parameters) {
+    public final void setParameters(final List<ParameterFactory> parameters) {
         this.parameters = parameters;
     }
     
@@ -94,7 +94,7 @@ public final class ObjectFactory {
      * @throws InvocationTargetException
      * @throws IntrospectionException
      */
-    private <U, V> U set(final String name, final U value, final V truc) 
+    private final <U, V> U set(final String name, final U value, final V truc) 
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, 
             IntrospectionException {
         final PropertyDescriptor pd = new PropertyDescriptor(name, truc.getClass());

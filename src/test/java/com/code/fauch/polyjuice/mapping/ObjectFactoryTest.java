@@ -37,7 +37,8 @@ import com.code.fauch.polyjuice.Parameter;
 public class ObjectFactoryTest {
 
     @Test
-    public void test() throws IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException {
+    public void test() throws IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, 
+    NoSuchMethodException, SecurityException, IntrospectionException {
         final ArrayList<String> labels = new ArrayList<>();
         try (InputStream in = getClass().getResourceAsStream("/truc-template.yml")) {
             final ObjectFactory payload = new Yaml(new Constructor(ObjectFactory.class)).load(in);
@@ -58,7 +59,8 @@ public class ObjectFactoryTest {
     }
 
     @Test
-    public void testImmuable() throws IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException {
+    public void testImmuable() throws IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, 
+    NoSuchMethodException, SecurityException, IntrospectionException {
         final ArrayList<String> labels = new ArrayList<>();
         try (InputStream in = getClass().getResourceAsStream("/truc-template.yml")) {
             final ObjectFactory payload = new Yaml(new Constructor(ObjectFactory.class)).load(in);
@@ -77,4 +79,52 @@ public class ObjectFactoryTest {
             Assert.assertEquals(Arrays.asList("msg", "msgSize"), labels);
         }
     }
+    
+    @Test
+    public void testExtenstion() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, 
+    NoSuchMethodException, SecurityException, IntrospectionException, IOException {
+        final ArrayList<String> labels = new ArrayList<>();
+        try (InputStream in = getClass().getResourceAsStream("/truc-template-with-size.yml")) {
+            final TrucWithSizeFactory payload = new Yaml(new Constructor(TrucWithSizeFactory.class)).load(in);
+            final TrucWithSize truc = payload.build();
+            Assert.assertEquals(42, truc.getMagicalNumber().getValue().intValue());
+            Assert.assertEquals(13, truc.getMsgSize().getValue().intValue());
+            Assert.assertEquals("HELLO WORLD !", truc.getMsg().getValue());
+            Assert.assertEquals(Duration.ofHours(-12), truc.getClock().getValue().getInformation());
+            Assert.assertEquals(49, truc.getBytes().length);
+            truc.addPropertyChangeListener(e -> labels.add(((Parameter<?>) e.getSource()).getLabel()));
+            truc.getMsg().setValue("MERCI");
+            truc.getMsgSize().setValue(5);
+            Assert.assertEquals(5, truc.getMsgSize().getValue().intValue());
+            Assert.assertEquals("MERCI", truc.getMsg().getValue());
+            Assert.assertEquals(41, truc.getBytes().length);
+            Assert.assertEquals(Arrays.asList("msg", "msgSize"), labels);
+            Assert.assertEquals(50, truc.getSize().intValue());
+        }
+    }
+    
+    @Test
+    public void testComposition() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, 
+    NoSuchMethodException, SecurityException, IntrospectionException, IOException {
+        final ArrayList<String> labels = new ArrayList<>();
+        try (InputStream in = getClass().getResourceAsStream("/truc-template-composition.yml")) {
+            final Frame frame = new Yaml(new Constructor(Frame.class)).load(in);
+            Assert.assertEquals(100, frame.getRate().intValue());
+            Assert.assertEquals("192.168.56.103", frame.getDst());
+            final Truc truc = frame.getPayload().build(Truc.class);
+            Assert.assertEquals(42, truc.getMagicalNumber().getValue().intValue());
+            Assert.assertEquals(13, truc.getMsgSize().getValue().intValue());
+            Assert.assertEquals("HELLO WORLD !", truc.getMsg().getValue());
+            Assert.assertEquals(Duration.ofHours(-12), truc.getClock().getValue().getInformation());
+            Assert.assertEquals(49, truc.getBytes().length);
+            truc.addPropertyChangeListener(e -> labels.add(((Parameter<?>) e.getSource()).getLabel()));
+            truc.getMsg().setValue("MERCI");
+            truc.getMsgSize().setValue(5);
+            Assert.assertEquals(5, truc.getMsgSize().getValue().intValue());
+            Assert.assertEquals("MERCI", truc.getMsg().getValue());
+            Assert.assertEquals(41, truc.getBytes().length);
+            Assert.assertEquals(Arrays.asList("msg", "msgSize"), labels);
+        }
+    }
+
 }
