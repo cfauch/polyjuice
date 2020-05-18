@@ -32,6 +32,6 @@ public interface IObject {
      * 
      * @param orderedParameters the ordered parameters (not null)
      */
-    void setOrderedParameters(List<Parameter<?>> orderedParameters);
+    void addOrderedParameters(List<Parameter<?>> orderedParameters);
     
 }

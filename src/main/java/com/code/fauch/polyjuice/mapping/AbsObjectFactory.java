@@ -74,10 +74,10 @@ public abstract class AbsObjectFactory<T extends IObject> {
             InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException {
         final U truc = Objects.requireNonNull(clss, "clss is required").getConstructor().newInstance();
         final List<Parameter<?>> order = new ArrayList<>(Objects.requireNonNull(this.parameters, "missing 'parameters'").size());
-        truc.setOrderedParameters(order);
         for (final ParameterFactory pf : this.parameters) {
             order.add(set(Objects.requireNonNull(pf.getName(), "missing 'name' in one parameter"), pf.build(), truc));
         }
+        truc.addOrderedParameters(order);
         return truc;
     }
     

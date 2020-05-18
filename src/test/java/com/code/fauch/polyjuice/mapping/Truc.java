@@ -14,7 +14,6 @@
  */
 package com.code.fauch.polyjuice.mapping;
 
-import java.util.Iterator;
 import java.util.List;
 
 import com.code.fauch.polyjuice.AbsContent;
@@ -34,8 +33,6 @@ public class Truc extends AbsContent implements IObject {
     private Parameter<String> msg;
     
     private Parameter<OffsetClock> clock;
-    
-    private List<Parameter<?>> orderedParameters;
 
     /**
      * @return the magicalNumber
@@ -94,13 +91,8 @@ public class Truc extends AbsContent implements IObject {
     }
 
     @Override
-    public void setOrderedParameters(final List<Parameter<?>> orderedParameters) {
-        this.orderedParameters = orderedParameters;
-    }
-
-    @Override
-    public Iterator<Parameter<?>> iterator() {
-        return this.orderedParameters.iterator();
+    public void addOrderedParameters(final List<Parameter<?>> orderedParameters) {
+        getOrderedParameters().addAll(orderedParameters);
     }
     
 }

@@ -14,7 +14,8 @@
  */
 package com.code.fauch.polyjuice.mapping;
 
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.code.fauch.polyjuice.AbsContent;
@@ -34,10 +35,8 @@ public final class ImmuableTruc extends AbsContent {
     private final Parameter<String> msg;
     
     private final Parameter<OffsetClock> clock;
-    
-    private final List<Parameter<?>> orderedParameters;
 
-    public static final class Builder implements IObject {
+    public static final class Builder extends AbsContent implements IObject {
         
         private Parameter<Integer> magicalNumber;
         
@@ -47,8 +46,6 @@ public final class ImmuableTruc extends AbsContent {
         
         private Parameter<OffsetClock> clock;
         
-        private List<Parameter<?>> orderedParameters;
-
         /**
          * @return the magicalNumber
          */
@@ -106,17 +103,10 @@ public final class ImmuableTruc extends AbsContent {
         }
 
         /**
-         * @return the orderedParameters
-         */
-        public List<Parameter<?>> getOrderedParameters() {
-            return orderedParameters;
-        }
-
-        /**
          * @param orderedParameters the orderedParameters to set
          */
-        public void setOrderedParameters(List<Parameter<?>> orderedParameters) {
-            this.orderedParameters = orderedParameters;
+        public void addOrderedParameters(final List<Parameter<?>> orderedParameters) {
+            getOrderedParameters().addAll(orderedParameters);
         }
         
         public ImmuableTruc build() {
@@ -125,11 +115,11 @@ public final class ImmuableTruc extends AbsContent {
     }
     
     private ImmuableTruc(final Builder builder) {
+        super(Collections.unmodifiableList(new ArrayList<>(builder.getOrderedParameters())));
         this.clock = builder.clock;
         this.magicalNumber = builder.magicalNumber;
         this.msg = builder.msg;
         this.msgSize = builder.msgSize;
-        this.orderedParameters = builder.orderedParameters;
     }
 
     /**
@@ -158,11 +148,6 @@ public final class ImmuableTruc extends AbsContent {
      */
     public Parameter<OffsetClock> getClock() {
         return clock;
-    }
-
-    @Override
-    public Iterator<Parameter<?>> iterator() {
-        return this.orderedParameters.iterator();
     }
 
 }

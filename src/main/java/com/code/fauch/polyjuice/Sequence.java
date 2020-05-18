@@ -16,12 +16,11 @@ package com.code.fauch.polyjuice;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 /**
  * Definition of a sequence of item.
- * It is possible for client code to subscribe on changes on all items.
+ * It is possible for client code to subscribe on changes on all parameters.
  * 
  * @author c.fauch
  *
@@ -33,12 +32,7 @@ public class Sequence extends AbsContent {
      * Null means auto-adjust
      */
     private final Integer expectedSize;
-    
-    /**
-     * The expected ordered parameters in the sequence
-     */
-    private final List<Parameter<?>> orderedParameters;
-    
+        
     /**
      * Constructor.
      * 
@@ -46,8 +40,8 @@ public class Sequence extends AbsContent {
      * @param parameters the ordered list of parameters (list to copy, not null may be empty)
      */
     public Sequence(final Integer size, final List<Parameter<?>> parameters) {
+        super(Collections.unmodifiableList(new ArrayList<>(parameters)));
         this.expectedSize = size;
-        this.orderedParameters = Collections.unmodifiableList(new ArrayList<>(parameters));
     }
         
     /**
@@ -61,7 +55,7 @@ public class Sequence extends AbsContent {
 
     @SuppressWarnings("unchecked")
     public <U> Parameter<U> getParameter(String name) {
-        for (Parameter<?> p: this.orderedParameters) {
+        for (Parameter<?> p: getOrderedParameters()) {
             if (p != null) {
                 if (p.getLabel().equals(name)) {
                     return (Parameter<U>) p;
@@ -69,11 +63,6 @@ public class Sequence extends AbsContent {
             }
         }
         return null;
-    }
-
-    @Override
-    public Iterator<Parameter<?>> iterator() {
-        return this.orderedParameters.iterator();
     }
     
 }

@@ -64,9 +64,7 @@
  *     private Parameter&lt;Integer&gt; magicalNumber;
  *     
  *     private Parameter&lt;String&gt; msg;
- *     
- *     private List&lt;Parameter&lt;?&gt;&gt; orderedParameters;
- * 
+ *      
  *     public Parameter&lt;Integer&gt; getMagicalNumber() {
  *         return magicalNumber;
  *     }
@@ -83,12 +81,8 @@
  *         this.msg = msg;
  *     }
  * 
- *     public void setOrderedParameters(final List&lt;Parameter&lt;?&gt;&gt; orderedParameters) {
- *         this.orderedParameters = orderedParameters;
- *     }
- * 
- *     public Iterator&lt;Parameter&lt;?&gt;&gt; iterator() {
- *         return this.orderedParameters.iterator();
+ *     public void addOrderedParameters(final List&lt;Parameter&lt;?&gt;&gt; orderedParameters) {
+ *         getOrderedParameters().addAll(orderedParameters);
  *     }
  *     
  * }

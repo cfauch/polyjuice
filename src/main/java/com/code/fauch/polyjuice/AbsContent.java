@@ -16,24 +16,49 @@ package com.code.fauch.polyjuice;
 
 import java.beans.PropertyChangeListener;
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
- * Partial implementation of content that manage property change listeners and encoding based on the ability of iterate
- * over a sequence of parameters.
- * Real implementations just have to implement the parameters iteration.
- * 
+ * Partial implementation of content that manage property change listeners and encoding.
+ * It is possible for client code to subscribe on changes on all parameters.
+ *  
  * @author c.fauch
  *
  */
-public abstract class AbsContent implements IContent, Iterable<Parameter<?>> {
+public abstract class AbsContent implements IContent {
+    
+    /**
+     * The expected ordered parameters in the sequence
+     */
+    private final List<Parameter<?>> orderedParameters;
+    
+    /**
+     * Constructor.
+     * 
+     * Without parameters.
+     */
+    public AbsContent() {
+        this.orderedParameters = new ArrayList<>();
+    }
+    
+    /**
+     * Constructor.
+     * With parameters.
+     * 
+     * @param orderedParameters the ordered list of parameters
+     */
+    public AbsContent(final List<Parameter<?>> orderedParameters) {
+        this.orderedParameters = orderedParameters;
+    }
     
     /**
      * Subscribes the listener on each parameters.
      */
     @Override
     public final void addPropertyChangeListener(final PropertyChangeListener listener) {
-        for (Parameter<?> p : this) {
+        for (Parameter<?> p : this.orderedParameters) {
             if (!p.hasListener(listener)) {
                 p.addPropertyChangeListener(listener);
             }
@@ -45,7 +70,7 @@ public abstract class AbsContent implements IContent, Iterable<Parameter<?>> {
      */
     @Override
     public final void removePropertyChangeListener(final PropertyChangeListener listener) {
-        for (Parameter<?> p: this) {
+        for (Parameter<?> p: this.orderedParameters) {
             p.removePropertyChangeListener(listener);
         }
     }
@@ -69,13 +94,22 @@ public abstract class AbsContent implements IContent, Iterable<Parameter<?>> {
     }
     
     /**
+     * Returns all the parameters in the same order as expected in the encoded sequence.
+     * 
+     * @return all the parameters.
+     */
+    public List<Parameter<?>> getOrderedParameters() {
+        return this.orderedParameters;
+    }
+    
+    /**
      * Encode each parameters.
      * 
      * @return the encoded content.
      */
     private final byte[] encode() {
         final ByteArrayOutputStream output = new ByteArrayOutputStream();
-        for (Parameter<?> p : this) {
+        for (Parameter<?> p : this.orderedParameters) {
             if (p != null) {
                 output.writeBytes(p.getBytes());
             }

@@ -34,7 +34,7 @@ public class SequenceTest {
         final Sequence seq = new Sequence(4, params);
         params.add(Parameter.newParameter("l2", StdType.INT, 421, false));
         final ArrayList<IContent> seqParams = new ArrayList<IContent>();
-        for (IContent p : seq) {
+        for (IContent p : seq.getOrderedParameters()) {
             seqParams.add(p);
         }
         Assert.assertEquals(params.subList(0, 1), seqParams);
