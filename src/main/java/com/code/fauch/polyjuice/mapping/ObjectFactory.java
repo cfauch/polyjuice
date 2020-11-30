@@ -20,5 +20,5 @@ package com.code.fauch.polyjuice.mapping;
  * @author c.fauch
  *
  */
-public final class ObjectFactory extends AbsObjectFactory<IObject> {
+public class ObjectFactory extends AbsObjectFactory<IObject> {
 }

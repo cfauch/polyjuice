@@ -21,7 +21,7 @@ import java.lang.reflect.InvocationTargetException;
  * @author c.fauch
  *
  */
-public final class TrucWithIpFactory extends AbsObjectFactory<IObject> {
+public final class TrucWithIpFactory extends ObjectFactory {
 
     private String ip;
 

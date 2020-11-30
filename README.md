@@ -272,3 +272,177 @@ Instead of calling the factory directly with our object class, we use the class 
         Assert.assertEquals(41, truc.getBytes().length);
     }
 ```
+
+## What about object with transient fields ?
+
+Imagine you want to add a field `ip` in your object, but this field shouldn't be encoded.
+
+### 1. Here is the new `template.yml`:
+
+```
+ip: 192.168.56.103
+parameters:
+-  &magical_number
+   name: magicalNumber
+   type: INT
+   value: 42
+   readonly: true
+   
+-  name: msgSize
+   type: INT
+   value: 13
+   
+-  name: msg
+   type: STRING
+   value: HELLO WORLD !
+   
+-  name: clock
+   type: OFFSET_CLOCK
+   value: PT-12H
+
+-  *magical_number
+```
+
+### 2. Extend the `Truc` class to add the new field
+
+```
+public final class TrucWithIp extends Truc {
+
+    private String ip;
+
+    /**
+     * @return the ip
+     */
+    public String getIp() {
+        return ip;
+    }
+
+    /**
+     * @param ip the ip to set
+     */
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+}
+```
+
+### 3. Extend the `ObjectFactory` class to add the new field
+
+Redefine the `build` method to initialize the `ip` field of the returned object.
+
+```
+public final class TrucWithIpFactory extends ObjectFactory {
+
+    private String ip;
+
+    /**
+     * @return the ip
+     */
+    public String getIp() {
+        return ip;
+    }
+
+    /**
+     * @param ip the ip to set
+     */
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+
+    public TrucWithIp build() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, 
+    NoSuchMethodException, SecurityException, IntrospectionException {
+        final TrucWithIp truc = super.build(TrucWithIp.class);
+        truc.setIp(this.ip);
+        return truc;
+    }
+```
+
+### 4. It's ready, you can use it
+
+Instead of calling `snakeyaml` with `ObjectFactory.class`, you have to use the new one.
+
+```
+   try (InputStream in = getClass().getResourceAsStream("/truc-template-with-ip.yml")) {
+        final TrucWithIpFactory payload = new Yaml(new Constructor(TrucWithIpFactory.class)).load(in);
+        final TrucWithIp truc = payload.build();
+        truc.getMsg().setValue("MERCI");
+        truc.getMsgSize().setValue(5);
+        Assert.assertEquals(41, truc.getBytes().length);
+        Assert.assertEquals(Arrays.asList("msg", "msgSize"), labels);
+        Assert.assertEquals("192.168.56.103", truc.getIp());
+    }
+```
+
+## How to constrain the size of the encoded frame
+
+Specify the size of the encoded result, it will be truncated or padded with zeros (if necessary).
+
+### 1. Here is the new `template.yml`:
+
+Note the new `size` transient field. 
+
+```
+size: 50
+parameters:
+-  &magical_number
+   name: magicalNumber
+   type: INT
+   value: 42
+   readonly: true
+   
+-  name: msgSize
+   type: INT
+   value: 13
+   
+-  name: msg
+   type: STRING
+   value: HELLO WORLD !
+   
+-  name: clock
+   type: OFFSET_CLOCK
+   value: PT-12H
+
+-  *magical_number
+```
+
+### 2. Extend the `Truc` class
+
+Create a class implementing `ISizedObject` with the expected size.
+
+```
+public final class TrucWithSize extends Truc implements ISizedObject {
+
+    private Integer expectedSize;
+    
+    @Override
+    public void setExpectedSize(final Integer size) {
+        this.expectedSize = size;
+    }
+
+    @Override
+    public Integer getExpectedSize() {
+        return this.expectedSize;
+    }
+    
+}
+```
+
+### 3. Now, use it
+
+All you have to do is call `snakeyaml` with `SizedObjectFactory.class`.
+
+```
+    try (InputStream in = getClass().getResourceAsStream("/truc-template-with-size.yml")) {
+        final SizedObjectFactory payload = new Yaml(new Constructor(SizedObjectFactory.class)).load(in);
+        final TrucWithSize truc = payload.build(TrucWithSize.class);
+        Assert.assertEquals(42, truc.getMagicalNumber().getValue().intValue());
+        Assert.assertEquals(13, truc.getMsgSize().getValue().intValue());
+        Assert.assertEquals("HELLO WORLD !", truc.getMsg().getValue());
+        Assert.assertEquals(Duration.ofHours(-12), truc.getClock().getValue().getInformation());
+        Assert.assertEquals(50, truc.getExpectedSize().intValue());
+        Assert.assertEquals(50, truc.getBytes().length);
+    }
+```
+
