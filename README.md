@@ -127,9 +127,10 @@ The `addOrderedParameters` method allows to specify the order of the parameters 
 It is the same order as in the YAML file.
 
 ### 3. Now, use it
+ 
+All you have to do is call `snakeyaml` with `ObjectFactory.class` and then call the `build()` method with the class of the object you have just defined. 
 
-All you have to do is call `snakeyaml` with `ObjectFactory.class` and then call the `build()` method with the 
-class of the object you have just defined. 
+Don't forget to export the package of this class in your `mobile-info.java`, because `ObjectFactory` use reflection to instantiate corresponding object.
 
 ```
     final ObjectFactory payload = new Yaml(new Constructor(ObjectFactory.class)).load(in);
