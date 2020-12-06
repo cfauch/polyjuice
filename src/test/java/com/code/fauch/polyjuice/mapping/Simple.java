@@ -14,6 +14,8 @@
  */
 package com.code.fauch.polyjuice.mapping;
 
+import java.util.List;
+
 import com.code.fauch.polyjuice.AbsContent;
 import com.code.fauch.polyjuice.OffsetClock;
 import com.code.fauch.polyjuice.Parameter;
@@ -22,29 +24,13 @@ import com.code.fauch.polyjuice.Parameter;
  * @author c.fauch
  *
  */
-public class Truc extends AbsContent {
-
-    private Parameter<Integer> magicalNumber;
+public class Simple extends AbsContent implements IObject {
     
     private Parameter<Integer> msgSize;
     
     private Parameter<String> msg;
     
-    private Parameter<OffsetClock> clock;
-
-    /**
-     * @return the magicalNumber
-     */
-    public Parameter<Integer> getMagicalNumber() {
-        return magicalNumber;
-    }
-
-    /**
-     * @param magicalNumber the magicalNumber to set
-     */
-    public void setMagicalNumber(Parameter<Integer> magicalNumber) {
-        this.magicalNumber = magicalNumber;
-    }
+    private ObjectFactory payload;
 
     /**
      * @return the msgSize
@@ -73,19 +59,24 @@ public class Truc extends AbsContent {
     public void setMsg(Parameter<String> msg) {
         this.msg = msg;
     }
-
+    
     /**
-     * @return the clock
+     * @return the payload
      */
-    public Parameter<OffsetClock> getClock() {
-        return clock;
+    public ObjectFactory getPayload() {
+        return payload;
     }
 
     /**
-     * @param clock the clock to set
+     * @param payload the payload to set
      */
-    public void setClock(Parameter<OffsetClock> clock) {
-        this.clock = clock;
+    public void setPayload(ObjectFactory payload) {
+        this.payload = payload;
+    }
+
+    @Override
+    public void addOrderedParameters(final List<Parameter<?>> orderedParameters) {
+        getOrderedParameters().addAll(orderedParameters);
     }
     
 }

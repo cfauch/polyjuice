@@ -17,8 +17,9 @@ package com.code.fauch.polyjuice;
 import java.beans.PropertyChangeListener;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+
+import com.code.fauch.polyjuice.mapping.IObject;
 
 /**
  * Partial implementation of content that manage property change listeners and encoding.
@@ -27,7 +28,7 @@ import java.util.List;
  * @author c.fauch
  *
  */
-public abstract class AbsContent implements IContent {
+public abstract class AbsContent implements IContent, IObject {
     
     /**
      * The expected ordered parameters in the sequence
@@ -76,21 +77,17 @@ public abstract class AbsContent implements IContent {
     }
     
     /**
-     * Adapt the result if necessary to match the expected size if it is defined.
+     * Encode each parameters.
      */
     @Override
-    public final byte[] getBytes() {
-        return getExpectedSize() == null ? encode() : Arrays.copyOf(encode(), getExpectedSize());
-    }
-
-    /**
-     * Returns the expected size of the encoded content.
-     * If not null the result is truncated and padded with zeros to match the expected size.
-     * 
-     * @return null by default.
-     */
-    protected Integer getExpectedSize() {
-        return null;
+    public byte[] getBytes() {
+        final ByteArrayOutputStream output = new ByteArrayOutputStream();
+        for (Parameter<?> p : this.orderedParameters) {
+            if (p != null) {
+                output.writeBytes(p.getBytes());
+            }
+        }
+        return output.toByteArray();
     }
     
     /**
@@ -102,19 +99,8 @@ public abstract class AbsContent implements IContent {
         return this.orderedParameters;
     }
     
-    /**
-     * Encode each parameters.
-     * 
-     * @return the encoded content.
-     */
-    private final byte[] encode() {
-        final ByteArrayOutputStream output = new ByteArrayOutputStream();
-        for (Parameter<?> p : this.orderedParameters) {
-            if (p != null) {
-                output.writeBytes(p.getBytes());
-            }
-        }
-        return output.toByteArray();
+    @Override
+    public void addOrderedParameters(final List<Parameter<?>> orderedParameters) {
+        this.orderedParameters.addAll(orderedParameters);
     }
-    
 }

@@ -1,0 +1,17 @@
+!!com.code.fauch.polyjuice.mapping.ObjectFactory
+parameters:   
+-  name: msgSize
+   type: INT
+   value: 13
+   
+-  name: msg
+   type: STRING
+   value: HELLO WORLD !
+   
+-  name: payload
+   type: COMPOSITE
+   value:
+      - name: magic
+        type: INT
+        value: 3
+   

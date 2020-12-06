@@ -14,15 +14,83 @@
  */
 package com.code.fauch.polyjuice.mapping;
 
+import com.code.fauch.polyjuice.AbsFixedSizeContent;
+import com.code.fauch.polyjuice.OffsetClock;
+import com.code.fauch.polyjuice.Parameter;
+
 /**
  * @author c.fauch
  *
  */
-public final class TrucWithSize extends Truc implements ISizedObject {
+public final class TrucWithSize extends AbsFixedSizeContent {
 
     private Integer expectedSize;
     
-    @Override
+    private Parameter<Integer> magicalNumber;
+    
+    private Parameter<Integer> msgSize;
+    
+    private Parameter<String> msg;
+    
+    private Parameter<OffsetClock> clock;
+
+    
+    /**
+     * @return the magicalNumber
+     */
+    public Parameter<Integer> getMagicalNumber() {
+        return magicalNumber;
+    }
+
+    /**
+     * @param magicalNumber the magicalNumber to set
+     */
+    public void setMagicalNumber(Parameter<Integer> magicalNumber) {
+        this.magicalNumber = magicalNumber;
+    }
+
+    /**
+     * @return the msgSize
+     */
+    public Parameter<Integer> getMsgSize() {
+        return msgSize;
+    }
+
+    /**
+     * @param msgSize the msgSize to set
+     */
+    public void setMsgSize(Parameter<Integer> msgSize) {
+        this.msgSize = msgSize;
+    }
+
+    /**
+     * @return the msg
+     */
+    public Parameter<String> getMsg() {
+        return msg;
+    }
+
+    /**
+     * @param msg the msg to set
+     */
+    public void setMsg(Parameter<String> msg) {
+        this.msg = msg;
+    }
+
+    /**
+     * @return the clock
+     */
+    public Parameter<OffsetClock> getClock() {
+        return clock;
+    }
+
+    /**
+     * @param clock the clock to set
+     */
+    public void setClock(Parameter<OffsetClock> clock) {
+        this.clock = clock;
+    }
+
     public void setExpectedSize(final Integer size) {
         this.expectedSize = size;
     }
@@ -31,5 +99,5 @@ public final class TrucWithSize extends Truc implements ISizedObject {
     public Integer getExpectedSize() {
         return this.expectedSize;
     }
-    
+        
 }

@@ -19,20 +19,14 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Definition of a sequence of item.
+ * Definition of a sequence of item with a fixed sized result.
  * It is possible for client code to subscribe on changes on all parameters.
  * 
  * @author c.fauch
  *
  */
-public class Sequence extends AbsContent {
+public class Sequence extends AbsFixedSizeContent {
     
-    /**
-     * The expected size of the encoded sequence (in bytes).
-     * Null means auto-adjust
-     */
-    private final Integer expectedSize;
-        
     /**
      * Constructor.
      * 
@@ -40,19 +34,9 @@ public class Sequence extends AbsContent {
      * @param parameters the ordered list of parameters (list to copy, not null may be empty)
      */
     public Sequence(final Integer size, final List<Parameter<?>> parameters) {
-        super(Collections.unmodifiableList(new ArrayList<>(parameters)));
-        this.expectedSize = size;
+        super(Collections.unmodifiableList(new ArrayList<>(parameters)), size);
     }
         
-    /**
-     * The expected size.
-     * Null means auto-adjust
-     */
-    @Override
-    public final Integer getExpectedSize() {
-        return this.expectedSize;
-    }
-
     @SuppressWarnings("unchecked")
     public <U> Parameter<U> getParameter(String name) {
         for (Parameter<?> p: getOrderedParameters()) {
