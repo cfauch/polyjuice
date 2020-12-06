@@ -70,7 +70,7 @@ public abstract class AbsFixedSizeContent extends AbsContent implements ISizedOb
      * @param size the expected size by be null.
      */
     @Override
-    public void setExpectedSize(Integer size) {
+    public void setExpectedSize(final Integer size) {
         this.expectedSize = size;
     }
 }
