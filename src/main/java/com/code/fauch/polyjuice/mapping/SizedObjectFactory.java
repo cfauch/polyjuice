@@ -14,9 +14,6 @@
  */
 package com.code.fauch.polyjuice.mapping;
 
-import java.beans.IntrospectionException;
-import java.lang.reflect.InvocationTargetException;
-
 /**
  * Factory used to build new instance of ISizedObject.
  * 
@@ -35,7 +32,7 @@ public class SizedObjectFactory extends AbsObjectFactory<ISizedObject> {
      * 
      * @return the size in bytes
      */
-    public Integer getSize() {
+    public final Integer getSize() {
         return size;
     }
 
@@ -44,17 +41,15 @@ public class SizedObjectFactory extends AbsObjectFactory<ISizedObject> {
      * 
      * @param size the size to set in bytes
      */
-    public void setSize(Integer size) {
+    public final void setSize(final Integer size) {
         this.size = size;
     }
 
     /**
      * Build an object of the given class with the expected size if defined.
      */
-    @Override
     public <U extends ISizedObject> U build(Class<U> clss)
-            throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-            NoSuchMethodException, SecurityException, IntrospectionException {
+            throws Exception {
         final U obj =  super.build(clss);
         obj.setExpectedSize(this.size);
         return obj;

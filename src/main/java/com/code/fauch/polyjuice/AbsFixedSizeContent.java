@@ -35,13 +35,19 @@ public abstract class AbsFixedSizeContent extends AbsContent implements ISizedOb
     private Integer expectedSize;
     
     /**
-     * @param unmodifiableList
+     * Constructor
+     * 
+     * @param ordered content
+     * @param expected size (in bytes)
      */
-    public AbsFixedSizeContent(final List<Parameter<?>> parameters, final Integer expectedSize) {
-        super(parameters);
+    public AbsFixedSizeContent(final List<IContent> contents, final Integer expectedSize) {
+        super(contents);
         this.expectedSize = expectedSize;
     }
     
+    /**
+     * Constructor
+     */
     public AbsFixedSizeContent() {
         super();
     }
@@ -60,7 +66,7 @@ public abstract class AbsFixedSizeContent extends AbsContent implements ISizedOb
      * 
      * @return null by default.
      */
-    public Integer getExpectedSize() {
+    public final Integer getExpectedSize() {
         return this.expectedSize;
     }
 
@@ -70,7 +76,7 @@ public abstract class AbsFixedSizeContent extends AbsContent implements ISizedOb
      * @param size the expected size by be null.
      */
     @Override
-    public void setExpectedSize(final Integer size) {
+    public final void setExpectedSize(final Integer size) {
         this.expectedSize = size;
     }
 }

@@ -14,58 +14,52 @@
  */
 package com.code.fauch.polyjuice.mapping;
 
+import com.code.fauch.polyjuice.AbsContent;
+import com.code.fauch.polyjuice.DynamicArray;
+import com.code.fauch.polyjuice.Parameter;
+
 /**
  * @author c.fauch
  *
  */
-public final class Frame {
+public class CompositeArrayContent extends AbsContent {
+
+    /**
+     * Total number of items
+     */
+    private Parameter<Short> nb;
     
-    private String dst;
+    /**
+     * List of items
+     */
+    private DynamicArray<SimpleContent> elts;
+
+    /**
+     * @return the nb
+     */
+    public Parameter<Short> getNb() {
+        return nb;
+    }
+
+    /**
+     * @param nb the nb to set
+     */
+    public void setNb(Parameter<Short> nb) {
+        this.nb = nb;
+    }
+
+    /**
+     * @return the elts
+     */
+    public DynamicArray<SimpleContent> getElts() {
+        return elts;
+    }
+
+    /**
+     * @param elts the elts to set
+     */
+    public void setElts(DynamicArray<SimpleContent> elts) {
+        this.elts = elts;
+    }
     
-    private Integer rate;
-    
-    private ObjectFactory payload;
-
-    /**
-     * @return the dst
-     */
-    public String getDst() {
-        return dst;
-    }
-
-    /**
-     * @param dst the dst to set
-     */
-    public void setDst(String dst) {
-        this.dst = dst;
-    }
-
-    /**
-     * @return the rate
-     */
-    public Integer getRate() {
-        return rate;
-    }
-
-    /**
-     * @param rate the rate to set
-     */
-    public void setRate(Integer rate) {
-        this.rate = rate;
-    }
-
-    /**
-     * @return the payload
-     */
-    public ObjectFactory getPayload() {
-        return payload;
-    }
-
-    /**
-     * @param payload the payload to set
-     */
-    public void setPayload(ObjectFactory payload) {
-        this.payload = payload;
-    }
-
 }

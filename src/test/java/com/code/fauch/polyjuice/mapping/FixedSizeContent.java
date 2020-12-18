@@ -14,26 +14,45 @@
  */
 package com.code.fauch.polyjuice.mapping;
 
+import com.code.fauch.polyjuice.AbsFixedSizeContent;
+import com.code.fauch.polyjuice.Parameter;
+
 /**
  * @author c.fauch
  *
  */
-public final class TrucWithIp extends Truc {
-
-    private String ip;
-
+public class FixedSizeContent extends AbsFixedSizeContent {
+    
+    private Parameter<Integer> msgSize;
+    
+    private Parameter<String> msg;
+ 
     /**
-     * @return the ip
+     * @return the msgSize
      */
-    public String getIp() {
-        return ip;
+    public Parameter<Integer> getMsgSize() {
+        return msgSize;
     }
 
     /**
-     * @param ip the ip to set
+     * @param msgSize the msgSize to set
      */
-    public void setIp(String ip) {
-        this.ip = ip;
+    public void setMsgSize(Parameter<Integer> msgSize) {
+        this.msgSize = msgSize;
     }
 
+    /**
+     * @return the msg
+     */
+    public Parameter<String> getMsg() {
+        return msg;
+    }
+
+    /**
+     * @param msg the msg to set
+     */
+    public void setMsg(Parameter<String> msg) {
+        this.msg = msg;
+    }
+    
 }

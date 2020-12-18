@@ -1,0 +1,12 @@
+size: 10
+contents:
+-  !!com.code.fauch.polyjuice.mapping.ParameterFactory
+   name: msgSize
+   type: INT
+   value: 13
+
+-  !!com.code.fauch.polyjuice.mapping.ParameterFactory
+   name: msg
+   type: STRING
+   value: HELLO WORLD !
+   

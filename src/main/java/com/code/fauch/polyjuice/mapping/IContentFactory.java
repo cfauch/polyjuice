@@ -14,37 +14,33 @@
  */
 package com.code.fauch.polyjuice.mapping;
 
-import java.beans.IntrospectionException;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
+
+import com.code.fauch.polyjuice.IContent;
 
 /**
+ * Interface describing each content factory to use to build content
+ * from yaml.
+ * 
  * @author c.fauch
  *
  */
-public final class TrucWithIpFactory extends ObjectFactory {
-
-    private String ip;
+public interface IContentFactory <T extends IContent> {
 
     /**
-     * @return the ip
+     * The mapping name.
+     * Used to map the content with a field of the returned object.
+     * 
+     * @return the mapping field name
      */
-    public String getIp() {
-        return ip;
-    }
+    String getName();
 
     /**
-     * @param ip the ip to set
+     * Build a new instance of an object
+     * 
+     * @param clss the class of the object to build.
+     * @return the new instance where all field a mapped by content name
      */
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
+    public <U extends T> U build(Class<U> clss, Type... genericTypes) throws Exception;
 
-
-    public TrucWithIp build() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, 
-    NoSuchMethodException, SecurityException, IntrospectionException {
-        final TrucWithIp truc = super.build(TrucWithIp.class);
-        truc.setIp(this.ip);
-        return truc;
-    }
-    
 }

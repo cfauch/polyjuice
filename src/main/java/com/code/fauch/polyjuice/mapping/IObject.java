@@ -16,7 +16,7 @@ package com.code.fauch.polyjuice.mapping;
 
 import java.util.List;
 
-import com.code.fauch.polyjuice.Parameter;
+import com.code.fauch.polyjuice.IContent;
 
 /**
  * Interface describing the expected contract of object to build by ObjectFactory.
@@ -25,13 +25,13 @@ import com.code.fauch.polyjuice.Parameter;
  * @author c.fauch
  *
  */
-public interface IObject {
+public interface IObject extends IContent {
 
     /**
-     * Specify ordered parameters.
+     * Specify ordered contents.
      * 
-     * @param orderedParameters the ordered parameters (not null)
+     * @param orderedContents the ordered conents (not null)
      */
-    void addOrderedParameters(List<Parameter<?>> orderedParameters);
+    void addOrderedContents(List<IContent> orderedContents);
     
 }

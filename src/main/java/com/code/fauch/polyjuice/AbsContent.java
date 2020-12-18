@@ -28,12 +28,12 @@ import com.code.fauch.polyjuice.mapping.IObject;
  * @author c.fauch
  *
  */
-public abstract class AbsContent implements IContent, IObject {
+public abstract class AbsContent implements IObject {
     
     /**
-     * The expected ordered parameters in the sequence
+     * The expected ordered content in the sequence
      */
-    private final List<Parameter<?>> orderedParameters;
+    private final List<IContent> orderedContents;
     
     /**
      * Constructor.
@@ -41,50 +41,48 @@ public abstract class AbsContent implements IContent, IObject {
      * Without parameters.
      */
     public AbsContent() {
-        this.orderedParameters = new ArrayList<>();
+        this.orderedContents = new ArrayList<>();
     }
     
     /**
-     * Constructor.
-     * With parameters.
+     * Constructor with ordered contents.
      * 
-     * @param orderedParameters the ordered list of parameters
+     * @param orderedContents the ordered list of contents
      */
-    public AbsContent(final List<Parameter<?>> orderedParameters) {
-        this.orderedParameters = orderedParameters;
+    public AbsContent(final List<IContent> orderedContents) {
+        this.orderedContents = orderedContents;
     }
     
     /**
-     * Subscribes the listener on each parameters.
+     * Subscribes the listener on each contents.
      */
     @Override
-    public final void addPropertyChangeListener(final PropertyChangeListener listener) {
-        for (Parameter<?> p : this.orderedParameters) {
-            if (!p.hasListener(listener)) {
-                p.addPropertyChangeListener(listener);
-            }
+    public final PropertyChangeListener addPropertyChangeListener(final PropertyChangeListener listener) {
+        for (IContent content : this.orderedContents) {
+            content.addPropertyChangeListener(listener);
         }
+        return listener;
     }
     
     /**
-     * Removes the listener of each parameters.
+     * Removes the listener of each contents.
      */
     @Override
     public final void removePropertyChangeListener(final PropertyChangeListener listener) {
-        for (Parameter<?> p: this.orderedParameters) {
-            p.removePropertyChangeListener(listener);
+        for (IContent content: this.orderedContents) {
+            content.removePropertyChangeListener(listener);
         }
     }
     
     /**
-     * Encode each parameters.
+     * Encode each contents.
      */
     @Override
     public byte[] getBytes() {
         final ByteArrayOutputStream output = new ByteArrayOutputStream();
-        for (Parameter<?> p : this.orderedParameters) {
-            if (p != null) {
-                output.writeBytes(p.getBytes());
+        for (IContent content : this.orderedContents) {
+            if (content != null) {
+                output.writeBytes(content.getBytes());
             }
         }
         return output.toByteArray();
@@ -95,12 +93,12 @@ public abstract class AbsContent implements IContent, IObject {
      * 
      * @return all the parameters.
      */
-    public List<Parameter<?>> getOrderedParameters() {
-        return this.orderedParameters;
+    public final List<IContent> getOrderedContents() {
+        return this.orderedContents;
     }
     
     @Override
-    public void addOrderedParameters(final List<Parameter<?>> orderedParameters) {
-        this.orderedParameters.addAll(orderedParameters);
+    public final void addOrderedContents(final List<IContent> orderedContents) {
+        this.orderedContents.addAll(orderedContents);
     }
 }

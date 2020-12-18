@@ -14,20 +14,14 @@
  */
 package com.code.fauch.polyjuice.mapping;
 
-import java.beans.IntrospectionException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
-
-import com.code.fauch.polyjuice.Parameter;
 
 
 /**
@@ -37,94 +31,53 @@ import com.code.fauch.polyjuice.Parameter;
 public class ObjectFactoryTest {
 
     @Test
-    public void test() throws IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, 
-    NoSuchMethodException, SecurityException, IntrospectionException {
-        final ArrayList<String> labels = new ArrayList<>();
-        try (InputStream in = getClass().getResourceAsStream("/truc-template.yml")) {
-            final ObjectFactory payload = new Yaml(new Constructor(ObjectFactory.class)).load(in);
-            final Truc truc = payload.build(Truc.class);
-            Assert.assertEquals(42, truc.getMagicalNumber().getValue().intValue());
-            Assert.assertEquals(13, truc.getMsgSize().getValue().intValue());
-            Assert.assertEquals("HELLO WORLD !", truc.getMsg().getValue());
-            Assert.assertEquals(Duration.ofHours(-12), truc.getClock().getValue().getInformation());
-            Assert.assertEquals(49, truc.getBytes().length);
-            truc.addPropertyChangeListener(e -> labels.add(((Parameter<?>) e.getSource()).getLabel()));
-            truc.getMsg().setValue("MERCI");
-            truc.getMsgSize().setValue(5);
-            Assert.assertEquals(5, truc.getMsgSize().getValue().intValue());
-            Assert.assertEquals("MERCI", truc.getMsg().getValue());
-            Assert.assertEquals(41, truc.getBytes().length);
-            Assert.assertEquals(Arrays.asList("msg", "msgSize"), labels);
+    public void testSimpleContent() throws Exception {
+        final ObjectFactory factory = new ObjectFactory();
+        final ParameterFactory pf1 = new ParameterFactory();
+        final ParameterFactory pf2 = new ParameterFactory();
+        factory.setContents(Arrays.asList(pf1, pf2));
+        pf1.setName("msgSize");
+        pf1.setType("INT");
+        pf1.setValue(2);
+        pf2.setName("msg");
+        pf2.setType("STRING");
+        pf2.setValue("no");
+        final SimpleContent simple = factory.build(SimpleContent.class);
+        Assert.assertEquals(2, simple.getMsgSize().getValue().intValue());
+        Assert.assertEquals("no", simple.getMsg().getValue());
+    }
+    
+    @Test
+    public void testSimpleContentFromYaml() throws Exception {
+        try (InputStream in = getClass().getResourceAsStream("/simple-content-template.yml")) {
+            final ObjectFactory factory = new Yaml().load(in);
+            final SimpleContent simple = factory.build(SimpleContent.class);
+            Assert.assertEquals(13, simple.getMsgSize().getValue().intValue());
+            Assert.assertEquals("HELLO WORLD !", simple.getMsg().getValue());
         }
     }
 
     @Test
-    public void testImmuable() throws IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, 
-    NoSuchMethodException, SecurityException, IntrospectionException {
-        final ArrayList<String> labels = new ArrayList<>();
-        try (InputStream in = getClass().getResourceAsStream("/truc-template.yml")) {
-            final ObjectFactory payload = new Yaml(new Constructor(ObjectFactory.class)).load(in);
-            final ImmuableTruc truc = payload.build(ImmuableTruc.Builder.class).build();
-            Assert.assertEquals(42, truc.getMagicalNumber().getValue().intValue());
-            Assert.assertEquals(13, truc.getMsgSize().getValue().intValue());
-            Assert.assertEquals("HELLO WORLD !", truc.getMsg().getValue());
-            Assert.assertEquals(Duration.ofHours(-12), truc.getClock().getValue().getInformation());
-            Assert.assertEquals(49, truc.getBytes().length);
-            truc.addPropertyChangeListener(e -> labels.add(((Parameter<?>) e.getSource()).getLabel()));
-            truc.getMsg().setValue("MERCI");
-            truc.getMsgSize().setValue(5);
-            Assert.assertEquals(5, truc.getMsgSize().getValue().intValue());
-            Assert.assertEquals("MERCI", truc.getMsg().getValue());
-            Assert.assertEquals(41, truc.getBytes().length);
-            Assert.assertEquals(Arrays.asList("msg", "msgSize"), labels);
-        }
-    }
-    
-    @Test
-    public void testExtenstion() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, 
-    NoSuchMethodException, SecurityException, IntrospectionException, IOException {
-        final ArrayList<String> labels = new ArrayList<>();
-        try (InputStream in = getClass().getResourceAsStream("/truc-template-with-ip.yml")) {
-            final TrucWithIpFactory payload = new Yaml(new Constructor(TrucWithIpFactory.class)).load(in);
-            final TrucWithIp truc = payload.build();
-            Assert.assertEquals(42, truc.getMagicalNumber().getValue().intValue());
-            Assert.assertEquals(13, truc.getMsgSize().getValue().intValue());
-            Assert.assertEquals("HELLO WORLD !", truc.getMsg().getValue());
-            Assert.assertEquals(Duration.ofHours(-12), truc.getClock().getValue().getInformation());
-            Assert.assertEquals(49, truc.getBytes().length);
-            truc.addPropertyChangeListener(e -> labels.add(((Parameter<?>) e.getSource()).getLabel()));
-            truc.getMsg().setValue("MERCI");
-            truc.getMsgSize().setValue(5);
-            Assert.assertEquals(5, truc.getMsgSize().getValue().intValue());
-            Assert.assertEquals("MERCI", truc.getMsg().getValue());
-            Assert.assertEquals(41, truc.getBytes().length);
-            Assert.assertEquals(Arrays.asList("msg", "msgSize"), labels);
-            Assert.assertEquals("192.168.56.103", truc.getIp());
-        }
-    }
-    
-    @Test
-    public void testComposition() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, 
-    NoSuchMethodException, SecurityException, IntrospectionException, IOException {
-        final ArrayList<String> labels = new ArrayList<>();
-        try (InputStream in = getClass().getResourceAsStream("/truc-template-composition.yml")) {
-            final Frame frame = new Yaml(new Constructor(Frame.class)).load(in);
-            Assert.assertEquals(100, frame.getRate().intValue());
-            Assert.assertEquals("192.168.56.103", frame.getDst());
-            final Truc truc = frame.getPayload().build(Truc.class);
-            Assert.assertEquals(42, truc.getMagicalNumber().getValue().intValue());
-            Assert.assertEquals(13, truc.getMsgSize().getValue().intValue());
-            Assert.assertEquals("HELLO WORLD !", truc.getMsg().getValue());
-            Assert.assertEquals(Duration.ofHours(-12), truc.getClock().getValue().getInformation());
-            Assert.assertEquals(49, truc.getBytes().length);
-            truc.addPropertyChangeListener(e -> labels.add(((Parameter<?>) e.getSource()).getLabel()));
-            truc.getMsg().setValue("MERCI");
-            truc.getMsgSize().setValue(5);
-            Assert.assertEquals(5, truc.getMsgSize().getValue().intValue());
-            Assert.assertEquals("MERCI", truc.getMsg().getValue());
-            Assert.assertEquals(41, truc.getBytes().length);
-            Assert.assertEquals(Arrays.asList("msg", "msgSize"), labels);
+    public void testComposiyeContentFromYaml() throws Exception {
+        try (InputStream in = getClass().getResourceAsStream("/composite-content-template.yml")) {
+            final ObjectFactory factory = new Yaml().load(in);
+            final CompositeContent composite = factory.build(CompositeContent.class);
+            Assert.assertNull(composite.getSize().getValue());
+            Assert.assertEquals(Duration.ofHours(-12), composite.getClock().getValue().getInformation());
+            final SimpleContent simple = composite.getSubContent();
+            Assert.assertEquals(13, simple.getMsgSize().getValue().intValue());
+            Assert.assertEquals("HELLO WORLD !", simple.getMsg().getValue());
         }
     }
 
+    @Test
+    public void testImmutableContentFromYaml() throws Exception {
+        try (InputStream in = getClass().getResourceAsStream("/simple-content-template.yml")) {
+            final ObjectFactory factory = new Yaml(new Constructor(ObjectFactory.class)).load(in);
+            final ImmutableContent truc = factory.build(ImmutableContent.Builder.class).build();
+            Assert.assertEquals(13, truc.getMsgSize().getValue().intValue());
+            Assert.assertEquals("HELLO WORLD !", truc.getMsg().getValue());
+       }
+    }
+    
 }

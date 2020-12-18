@@ -431,6 +431,7 @@ public final class StdType implements ITypeProvider {
         
     };
     
+    @SuppressWarnings("unchecked")
     @Override
     public IType<?> getInstance(String name) {
         if (name == null) {

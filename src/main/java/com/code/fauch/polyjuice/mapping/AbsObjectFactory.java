@@ -17,11 +17,14 @@ package com.code.fauch.polyjuice.mapping;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import com.code.fauch.polyjuice.Parameter;
+import com.code.fauch.polyjuice.IContent;
 
 /**
  * Abstract object factory.
@@ -30,29 +33,53 @@ import com.code.fauch.polyjuice.Parameter;
  * @author c.fauch
  *
  */
-public abstract class AbsObjectFactory<T extends IObject> {
+public abstract class AbsObjectFactory<T extends IObject> implements IContentFactory<T> {
 
     /**
-     * The ordered list of parameters.
+     * name of the field
      */
-    private List<ParameterFactory> parameters;
+    private String name;
 
     /**
-     * Returns the ordered list of parameters.
+     * Returns the name of the field (may be null)
      * 
-     * @return the parameters
+     * @return the name
      */
-    public final List<ParameterFactory> getParameters() {
-        return parameters;
+    @Override
+    public final String getName() {
+        return name;
     }
 
     /**
-     * Specify the ordered list of parameters.
+     * Specify the name of the field (may  be null)
      * 
-     * @param parameters the parameters to set
+     * @param name the name to set
      */
-    public final void setParameters(final List<ParameterFactory> parameters) {
-        this.parameters = parameters;
+    public final void setName(final String name) {
+        this.name = name;
+    }
+
+    /**
+     * The ordered list of contents.
+     */
+    private List<IContentFactory<?>> contents;
+
+    /**
+     * Returns the ordered list of contents.
+     * 
+     * @return the contents
+     */
+    public final List<IContentFactory<?>> getContents() {
+        return contents;
+    }
+
+    /**
+     * Specify the ordered list of contents.
+     * 
+     * @param contents the ordered list of contents to set
+     */
+    public final void setContents(final List<IContentFactory<?>> contents) {
+        this.contents = contents;
     }
     
     /**
@@ -69,15 +96,14 @@ public abstract class AbsObjectFactory<T extends IObject> {
      * @throws SecurityException
      * @throws IntrospectionException
      */
-    public <U extends T> U build(final Class<U> clss) 
-            throws InstantiationException, IllegalAccessException, IllegalArgumentException, 
-            InvocationTargetException, NoSuchMethodException, SecurityException, IntrospectionException {
+    public <U extends T> U build(final Class<U> clss, Type... genericTypes) 
+            throws Exception {
         final U truc = Objects.requireNonNull(clss, "clss is required").getConstructor().newInstance();
-        final List<Parameter<?>> order = new ArrayList<>(Objects.requireNonNull(this.parameters, "missing 'parameters'").size());
-        for (final ParameterFactory pf : this.parameters) {
-            order.add(set(Objects.requireNonNull(pf.getName(), "missing 'name' in one parameter"), pf.build(), truc));
+        final List<IContent> order = new ArrayList<>(Objects.requireNonNull(this.contents, "missing 'contents'").size());
+        for (final IContentFactory<?> cf : this.contents) {
+            order.add(set(cf, truc));
         }
-        truc.addOrderedParameters(order);
+        truc.addOrderedContents(order);
         return truc;
     }
     
@@ -95,11 +121,21 @@ public abstract class AbsObjectFactory<T extends IObject> {
      * @throws InvocationTargetException
      * @throws IntrospectionException
      */
-    private final <U, V> U set(final String name, final U value, final V truc) 
-            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, 
-            IntrospectionException {
-        final PropertyDescriptor pd = new PropertyDescriptor(name, truc.getClass());
-        pd.getWriteMethod().invoke(truc, value);
+    private final <U extends IContent> U set(final IContentFactory<U> cf, final IContent truc) 
+            throws Exception {
+        final PropertyDescriptor pd = new PropertyDescriptor(Objects.requireNonNull(cf.getName(), "missing 'name' in one content"), truc.getClass());
+        final Method setter = pd.getWriteMethod();
+        final ArrayList<Type> mappingGenericTypes = new ArrayList<>();
+         for(Type genericParameterType : setter.getGenericParameterTypes()){
+            if(genericParameterType instanceof ParameterizedType){
+                for(Type parameterArgType : ((ParameterizedType) genericParameterType).getActualTypeArguments()){
+                    mappingGenericTypes.add(parameterArgType);
+                }
+            }
+        }
+        @SuppressWarnings("unchecked")
+        final U value = cf.build((Class<U>) pd.getPropertyType(), mappingGenericTypes.toArray(new Type[0]));
+        setter.invoke(truc, value);
         return value;
     }
 

@@ -28,8 +28,9 @@ public interface IContent {
      * Register a listener to listen all changes on this content.
      * 
      * @param listener the listener to register (not null)
+     * @return the registered listener
      */
-    void addPropertyChangeListener(PropertyChangeListener listener);
+    PropertyChangeListener addPropertyChangeListener(PropertyChangeListener listener);
     
     /**
      * Unregister a listener.
@@ -37,7 +38,7 @@ public interface IContent {
      * @param listener the listener to unregister
      */
     void removePropertyChangeListener(PropertyChangeListener listener);
-    
+
     /**
      * Encode this content into a sequence of bytes.
      * 

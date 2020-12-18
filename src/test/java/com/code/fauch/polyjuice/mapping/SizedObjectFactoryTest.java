@@ -14,11 +14,8 @@
  */
 package com.code.fauch.polyjuice.mapping;
 
-import java.beans.IntrospectionException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.time.Duration;
+import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,17 +29,32 @@ import org.yaml.snakeyaml.constructor.Constructor;
 public class SizedObjectFactoryTest {
 
     @Test
-    public void test() throws IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, 
-    NoSuchMethodException, SecurityException, IntrospectionException {
-        try (InputStream in = getClass().getResourceAsStream("/truc-template-with-size.yml")) {
-            final SizedObjectFactory payload = new Yaml(new Constructor(SizedObjectFactory.class)).load(in);
-            final TrucWithSize truc = payload.build(TrucWithSize.class);
-            Assert.assertEquals(42, truc.getMagicalNumber().getValue().intValue());
-            Assert.assertEquals(13, truc.getMsgSize().getValue().intValue());
-            Assert.assertEquals("HELLO WORLD !", truc.getMsg().getValue());
-            Assert.assertEquals(Duration.ofHours(-12), truc.getClock().getValue().getInformation());
-            Assert.assertEquals(50, truc.getExpectedSize().intValue());
-            Assert.assertEquals(50, truc.getBytes().length);
+    public void testFixedSizeContent() throws Exception {
+        final SizedObjectFactory factory = new SizedObjectFactory();
+        final ParameterFactory pf1 = new ParameterFactory();
+        final ParameterFactory pf2 = new ParameterFactory();
+        factory.setContents(Arrays.asList(pf1, pf2));
+        factory.setSize(20);
+        pf1.setName("msgSize");
+        pf1.setType("INT");
+        pf1.setValue(2);
+        pf2.setName("msg");
+        pf2.setType("STRING");
+        pf2.setValue("no");
+        final FixedSizeContent sizedContent = factory.build(FixedSizeContent.class);
+        Assert.assertEquals(20, sizedContent.getExpectedSize().intValue());
+        Assert.assertEquals(2, sizedContent.getMsgSize().getValue().intValue());
+        Assert.assertEquals("no", sizedContent.getMsg().getValue());
+    }
+    
+    @Test
+    public void testFixedSizeContentFromYaml() throws Exception {
+        try (InputStream in = getClass().getResourceAsStream("/fixedsize-content-template.yml")) {
+            final SizedObjectFactory factory = new Yaml(new Constructor(SizedObjectFactory.class)).load(in);
+            final FixedSizeContent content = factory.build(FixedSizeContent.class);
+            Assert.assertEquals(13, content.getMsgSize().getValue().intValue());
+            Assert.assertEquals("HELLO WORLD !", content.getMsg().getValue());
+            Assert.assertEquals(10, content.getExpectedSize().intValue());
         }
     }
     

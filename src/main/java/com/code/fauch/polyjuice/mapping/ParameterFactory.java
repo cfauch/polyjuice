@@ -14,6 +14,7 @@
  */
 package com.code.fauch.polyjuice.mapping;
 
+import java.lang.reflect.Type;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -33,7 +34,7 @@ import com.code.fauch.polyjuice.spi.Providers;
  * @author c.fauch
  *
  */
-public final class ParameterFactory {
+public final class ParameterFactory implements IContentFactory<Parameter<?>> {
     
     /**
      * name of the parameter
@@ -189,5 +190,10 @@ public final class ParameterFactory {
         }
         return type.cast(value);
     }
-    
+
+    @Override
+    public <U extends Parameter<?>> U build(Class<U> clss, Type... genericTypes) throws Exception {
+        return (U) build();
+    }
+
 }

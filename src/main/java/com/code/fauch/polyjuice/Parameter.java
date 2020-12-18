@@ -26,7 +26,7 @@ import java.util.Objects;
  * @author c.fauch
  *
  */
-public class Parameter <T> implements IContent {
+public class Parameter<T> implements IContent {
 
     /**
      * Name of the event raised when value change.
@@ -136,7 +136,7 @@ public class Parameter <T> implements IContent {
      * 
      * @return the value
      */
-    public final synchronized T getValue() {
+    public final T getValue() {
         return this.value;
     }
 
@@ -147,9 +147,7 @@ public class Parameter <T> implements IContent {
      */
     public final void setValue(final T value) {
         if (!this.isReadOnly) {
-            synchronized (this) {
-                this.value = value;
-            }
+            this.value = value;
             fireEvent(VALUE, value);
         }
     }
@@ -168,8 +166,11 @@ public class Parameter <T> implements IContent {
      * Register a listener to listen changes on this parameter
      */
     @Override
-    public final void addPropertyChangeListener(PropertyChangeListener listener) {
-        this.changeSupport.addPropertyChangeListener(listener);
+    public final PropertyChangeListener addPropertyChangeListener(PropertyChangeListener listener) {
+        if (!hasListener(listener)) {
+            this.changeSupport.addPropertyChangeListener(listener);
+        }
+        return listener;
     }
 
     /**
@@ -186,7 +187,7 @@ public class Parameter <T> implements IContent {
      * @param listener the listener to check (not null)
      * @return true if listener already registered else false
      */
-    public boolean hasListener(PropertyChangeListener listener) {
+    private boolean hasListener(PropertyChangeListener listener) {
         for (PropertyChangeListener l : this.changeSupport.getPropertyChangeListeners()) {
             if (l == listener) {
                 return true;

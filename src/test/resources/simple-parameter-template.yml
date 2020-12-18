@@ -1,0 +1,4 @@
+!!com.code.fauch.polyjuice.mapping.ParameterFactory
+name: msgSize
+type: INT
+value: 13
