@@ -1,0 +1,18 @@
+!!com.code.fauch.polyjuice.mapping.ObjectFactory
+contents:
+-  !!com.code.fauch.polyjuice.mapping.ParameterFactory
+   name: nb
+   type: INT
+
+-  !!com.code.fauch.polyjuice.mapping.DynamicArrayFactory
+   name: elts
+   items:
+   - !!com.code.fauch.polyjuice.mapping.ObjectFactory
+     contents:
+     -  !!com.code.fauch.polyjuice.mapping.ParameterFactory
+        name: msgSize
+        type: INT
+        
+     -  !!com.code.fauch.polyjuice.mapping.ParameterFactory
+        name: msg
+        type: STRING

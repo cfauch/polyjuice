@@ -1,0 +1,24 @@
+!!com.code.fauch.polyjuice.mapping.ObjectFactory
+contents:
+-  !!com.code.fauch.polyjuice.mapping.ParameterFactory
+   name: clock
+   type: OFFSET_CLOCK
+   value: PT-12H
+
+-  !!com.code.fauch.polyjuice.mapping.ParameterFactory
+   name: size
+   type: INT
+   
+-  !!com.code.fauch.polyjuice.mapping.ObjectFactory
+   name: subContent
+   contents:
+   -  !!com.code.fauch.polyjuice.mapping.ParameterFactory
+      name: msgSize
+      type: INT
+      value: 13
+   
+   -  !!com.code.fauch.polyjuice.mapping.ParameterFactory
+      name: msg
+      type: STRING
+      value: HELLO WORLD !
+       
