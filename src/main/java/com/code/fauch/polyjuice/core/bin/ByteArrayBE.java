@@ -1,15 +1,13 @@
 package com.code.fauch.polyjuice.core.bin;
 
-public final class ByteArrayBE {
+public final class ByteArrayBE implements IByteArray {
 
     private int nbBytes;
     private int nbBits;
     private final byte[] buff;
-
-    public static ByteArrayBE wrap(final byte[] buff, final int offset) { // offset = bytes + bits from the left
-        final int index = offset / 8;
-        final int pos = offset - (index * 8);
-        return new ByteArrayBE(buff, index, pos);
+    
+    ByteArrayBE(final byte[] buff, final int offset) { // offset = bytes + bits from the left
+        this(buff, offset / 8, offset % 8);
     }
 
     private ByteArrayBE(final byte[] buff, final int index, final int position) {
@@ -35,7 +33,7 @@ public final class ByteArrayBE {
         return buff;
     }
 
-    public byte[] getBytes() {
+    public byte[] array() {
         return this.buff;
     }
 

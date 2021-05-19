@@ -1,19 +1,17 @@
 package com.code.fauch.polyjuice.core.bin;
 
-public final class ByteArrayLE {
+public final class ByteArrayLE implements IByteArray {
 
     private int nbBytes;
     private int nbBits;
     private final byte[] buff;
 
-    public static ByteArrayLE wrap(final byte[] buff, final int offset) { // offset = bytes from the right + bit from the left (snake)
-        final int index = offset / 8;
-        final int pos = offset - (index * 8);
-        return new ByteArrayLE(buff, index, pos);
+    ByteArrayLE(final byte[] buff, final int offset) { // offset = bytes from the right + bit from the left (snake)
+        this(buff, buff.length - 1 - (offset / 8), offset % 8);
     }
 
     private ByteArrayLE(final byte[] buff, final int index, final int position) {
-        this.nbBytes = buff.length - index - 1;
+        this.nbBytes = index;
         this.nbBits = position;
         this.buff = buff;
     }
@@ -35,7 +33,7 @@ public final class ByteArrayLE {
         return buff;
     }
 
-    public byte[] getBytes() {
+    public byte[] array() {
         return this.buff;
     }
 

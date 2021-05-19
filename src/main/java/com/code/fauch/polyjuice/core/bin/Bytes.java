@@ -1,11 +1,17 @@
 package com.code.fauch.polyjuice.core.bin;
 
+import java.nio.ByteOrder;
+
 public final class Bytes {
 
     public Bytes() {
         // Nothing to do
     }
 
+    public static IByteArray wrap(final byte[] buff, final int offset, final ByteOrder order) {
+        return order == ByteOrder.LITTLE_ENDIAN ? new ByteArrayLE(buff, offset) : new ByteArrayBE(buff, offset);
+    }
+    
     public static int extract(final int b, final int length) {
         return extract(b, 0, length);
     }
